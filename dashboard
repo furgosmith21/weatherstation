@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Weather Station</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#08131f;
+color:white;
+text-align:center;
+}
+
+.header{
+padding:20px;
+font-size:28px;
+font-weight:bold;
+background:#10263d;
+}
+
+.card{
+background:#16314d;
+margin:12px;
+padding:18px;
+border-radius:14px;
+font-size:22px;
+box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+
+.big{
+font-size:34px;
+font-weight:bold;
+}
+
+.footer{
+padding:20px;
+font-size:14px;
+color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+🌦 WEATHER STATION LIVE
+</div>
+
+<div class="card big" id="condition">Loading...</div>
+<div class="card" id="signal">Signal</div>
+
+<div class="card" id="temp">Temp</div>
+<div class="card" id="hum">Humidity</div>
+<div class="card" id="pres">Pressure</div>
+
+<div class="card" id="rain">Rain</div>
+<div class="card" id="wind">Wind</div>
+<div class="card" id="gust">Gust</div>
+
+<div class="footer">
+Powered by ESP32 + LoRa + Firebase
+</div>
+
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU",
+databaseURL: "https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app/"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database().ref("weather");
+
+db.on("value", (snap)=>{
+
+let d = snap.val();
+
+document.getElementById("condition").innerHTML = "Condition: " + d.condition;
+document.getElementById("signal").innerHTML = "Storm: " + d.signal;
+
+document.getElementById("temp").innerHTML = "🌡 Temp: " + d.temp + " °C";
+document.getElementById("hum").innerHTML = "💧 Humidity: " + d.humidity + " %";
+document.getElementById("pres").innerHTML = "⏲ Pressure: " + d.pressure + " hPa";
+
+document.getElementById("rain").innerHTML = "🌧 Rain: " + d.rain;
+document.getElementById("wind").innerHTML = "💨 Wind: " + d.wind;
+document.getElementById("gust").innerHTML = "🌪 Gust: " + d.gust;
+
+});
+</script>
+
+</body>
+</html>
