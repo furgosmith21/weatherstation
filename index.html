@@ -1,132 +1,61 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Weather Station Live</title>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
+<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>SHAO Weather Monitoring</title>
+<script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js'></script>
+<script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js'></script>
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:#08131f;
-color:white;
-text-align:center;
-}
-
-.header{
-background:#10263d;
-padding:18px;
-font-size:28px;
-font-weight:bold;
-}
-
-.card{
-background:#16314d;
-margin:12px;
-padding:18px;
-border-radius:14px;
-font-size:22px;
-box-shadow:0 0 10px rgba(0,0,0,.35);
-}
-
-.big{
-font-size:34px;
-font-weight:bold;
-}
-
-.green{color:#00ff88;}
-.red{color:#ff4444;}
-
-.footer{
-padding:20px;
-font-size:14px;
-color:#aaa;
-}
-</style>
-</head>
-
+:root{--bg:#08131f;--card:#efefef;--head:#10263d;--accent:#11b0b5;--text:#111}
+body.light{--bg:#eef4fa;--card:#fff;--head:#11b0b5;--text:#111}
+body{margin:0;background:var(--bg);font-family:Arial;display:flex;justify-content:center;align-items:center;min-height:100vh;color:var(--text);transition:.4s}
+.card{width:95%;max-width:520px;background:var(--card);border-radius:12px;overflow:hidden}
+.topbar,.bottombar{background:var(--head);color:#fff;text-align:center;padding:14px;font-weight:bold}
+.header{position:relative;padding:22px;min-height:290px}
+.clock{position:absolute;top:25px;right:18px;width:160px;height:160px;border-radius:50%;background:var(--accent);border:8px solid #fff}
+.hand{position:absolute;bottom:50%;left:50%;transform-origin:bottom}.hour{width:4px;height:40px;background:#fff}.minute{width:3px;height:58px;background:#fff}.second{width:2px;height:65px;background:red}
+.digital{position:absolute;left:8px;top:72px;font-size:12px;color:#fff}
+.footerstats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;background:var(--accent);padding:16px;color:#fff;text-align:center}
+.weather-icon{font-size:40px;animation:float 2s infinite alternate}.badge{padding:5px 10px;border-radius:20px;background:#ff9800;color:#fff;font-size:12px}
+@keyframes float{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+@media(min-width:600px){.footerstats{grid-template-columns:repeat(4,1fr)}}
+</style></head>
 <body>
-
-<div class="header">🌦 MARINDUQUE WEATHER STATION LIVE</div>
-
-<div class="card big" id="status">Checking...</div>
-<div class="card big" id="condition">Loading...</div>
-<div class="card" id="signal">Storm Signal</div>
-
-<div class="card" id="temp">Temp</div>
-<div class="card" id="hum">Humidity</div>
-<div class="card" id="pres">Pressure</div>
-
-<div class="card" id="rain">Rain</div>
-<div class="card" id="wind">Wind</div>
-<div class="card" id="gust">Gust</div>
-
-<div class="card" id="last">Last Update</div>
-
-<div class="footer">
-  SHAO WEATHER MONITORING
+<div class='card'>
+<div class='topbar'>🌦 WEATHER STATION LIVE</div>
+<div class='header'>
+<h2 id='date'></h2><div id='status'></div>
+<div class='weather-icon' id='icon'>☀️</div>
+<div style='font-size:40px' id='temp'>--°C</div>
+<div>Heat Index <span id='heat'>--°C</span></div>
+<div>Pressure: <span id='pres'>--</span></div>
+<div>Gust: <span id='gust'>--</span></div>
+<div id='signalBadge' class='badge'>No Signal</div>
+<div class='clock'>
+<div style='position:absolute;inset:0;color:white;font-size:14px'>
+<span style='position:absolute;top:8px;left:74px'>12</span>
+<span style='position:absolute;top:24px;right:28px'>1</span>
+<span style='position:absolute;top:55px;right:8px'>3</span>
+<span style='position:absolute;bottom:24px;right:28px'>5</span>
+<span style='position:absolute;bottom:8px;left:76px'>6</span>
+<span style='position:absolute;bottom:24px;left:28px'>7</span>
+<span style='position:absolute;top:55px;left:8px'>9</span>
+<span style='position:absolute;top:24px;left:28px'>11</span>
 </div>
-
+<div class='hand hour' id='hour'></div><div class='hand minute' id='minute'></div><div class='hand second' id='second'></div><div class='digital' id='digital'></div></div>
+</div>
+<div class='footerstats'>
+<div><small>WEATHER</small><div id='condition'></div></div>
+<div><small>RAIN</small><div id='rain'></div></div>
+<div><small>HUMIDITY</small><div id='hum'></div></div>
+<div><small>WIND</small><div id='wind'></div></div>
+<div><small>PRESSURE</small><div id='pres2'></div></div>
+<div><small>GUST</small><div id='gust2'></div></div>
+</div>
+<div class='bottombar'>SHAO WEATHER MONITORING • <span id='last'></span></div>
+</div>
 <script>
-const firebaseConfig = {
-apiKey: "AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU",
-databaseURL: "https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app/"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database().ref("weather");
-
-db.on("value", (snap)=>{
-
-let d = snap.val();
-if(!d) return;
-
-document.getElementById("condition").innerHTML =
-"Condition: " + d.condition;
-
-document.getElementById("signal").innerHTML =
-"Storm: " + d.signal;
-
-document.getElementById("temp").innerHTML =
-"🌡 Temp: " + d.temp + " °C";
-
-document.getElementById("hum").innerHTML =
-"💧 Humidity: " + d.humidity + " %";
-
-document.getElementById("pres").innerHTML =
-"⏲ Pressure: " + d.pressure + " hPa";
-
-document.getElementById("rain").innerHTML =
-"🌧 Rain: " + d.rain;
-
-document.getElementById("wind").innerHTML =
-"💨 Wind: " + d.wind;
-
-document.getElementById("gust").innerHTML =
-"🌪 Gust: " + d.gust;
-
-let age = (Date.now() - d.time)/1000;
-
-if(age < 15){
-document.getElementById("status").innerHTML =
-"<span class='green'>🟢 RECEIVER ONLINE</span>";
-}else{
-document.getElementById("status").innerHTML =
-"<span class='red'>🔴 RECEIVER OFFLINE</span>";
-}
-
-let dt = new Date(d.time);
-
-document.getElementById("last").innerHTML =
-"Last Update: " + dt.toLocaleString();
-
-});
-</script>
-
-</body>
-</html>
-
+const firebaseConfig={apiKey:'AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU',databaseURL:'https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app/'};firebase.initializeApp(firebaseConfig);
+const db=firebase.database().ref('weather');
+function updateClock(){let n=new Date(),h=n.getHours()%12,m=n.getMinutes(),s=n.getSeconds();hour.style.transform=`translateX(-50%) rotate(${h*30+m/2}deg)`;minute.style.transform=`translateX(-50%) rotate(${m*6}deg)`;second.style.transform=`translateX(-50%) rotate(${s*6}deg)`;digital.innerText=n.toLocaleTimeString();date.innerText=n.toDateString();document.body.className=(n.getHours()>18||n.getHours()<6)?'':'light';}
+setInterval(updateClock,1000);updateClock();
+db.on('value',snap=>{let d=snap.val();if(!d)return;condition.innerHTML=d.condition;temp.innerHTML=d.temp+'°C';hum.innerHTML=d.humidity+'%';rain.innerHTML=d.rain;wind.innerHTML=d.wind;pres.innerHTML=d.pressure+' hPa';gust.innerHTML=d.gust;pres2.innerHTML=d.pressure+' hPa';gust2.innerHTML=d.gust;heat.innerHTML=(parseFloat(d.temp)+(parseFloat(d.humidity)*0.1)).toFixed(1)+'°C';signalBadge.innerHTML='⚠ '+d.signal;last.innerHTML=new Date(d.time).toLocaleString();icon.innerHTML=d.condition.includes('Rain')?'🌧️':d.condition.includes('Cloud')?'☁️':'☀️';status.innerHTML=(Date.now()-d.time<15000)?'🟢 ONLINE':'🔴 OFFLINE';});
+</script></body></html>
