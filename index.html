@@ -3,7 +3,7 @@
 <head>
 <meta charset='UTF-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<title>SHAO Weather Monitoring</title>
+<title>SHAO Weather Monitoring PRO</title>
 
 <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js'></script>
 <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js'></script>
@@ -24,85 +24,72 @@ body.light{
   --text:#111;
 }
 
-/* ✅ FULL SCREEN FIX */
+/* 🌍 FULL SCREEN + NO SCROLL */
 body{
   margin:0;
-  background:var(--bg);
-  font-family:Arial;
+  height:100vh;
+  overflow:hidden;
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
-  overflow:hidden;
+  font-family:Arial;
+  background:var(--bg);
   color:var(--text);
   transition:.4s;
+  position:relative;
 }
 
-/* CARD FULL SCREEN CONTROL */
+/* 🌫️ subtle animated background */
+body::before{
+  content:"";
+  position:absolute;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle, rgba(17,176,181,0.08), transparent 60%);
+  animation:moveBg 12s infinite linear;
+  z-index:0;
+}
+
+@keyframes moveBg{
+  0%{transform:translate(-10%,-10%)}
+  50%{transform:translate(-20%,10%)}
+  100%{transform:translate(-10%,-10%)}
+}
+
+/* 📱 CARD */
 .card{
-  width:95%;
+  width:96%;
   max-width:520px;
   height:100vh;
   display:flex;
   flex-direction:column;
   border-radius:12px;
   overflow:hidden;
+  position:relative;
+  z-index:1;
 }
 
-/* TOP BAR */
+/* HEADER & FOOTER */
 .topbar,.bottombar{
   background:var(--head);
   color:#fff;
   text-align:center;
-  padding:10px;
+  padding:8px;
   font-weight:bold;
+  font-size:14px;
   flex-shrink:0;
 }
 
-/* HEADER TAKES AVAILABLE SPACE */
 .header{
   flex:1;
+  padding:10px;
   position:relative;
-  padding:12px;
-  min-height:0;
   overflow:hidden;
-}
-
-/* CLOCK */
-.clock{
-  position:absolute;
-  top:15px;
-  right:15px;
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  background:var(--accent);
-  border:6px solid #fff;
-}
-
-/* HANDS */
-.hand{
-  position:absolute;
-  bottom:50%;
-  left:50%;
-  transform-origin:bottom;
-}
-
-.hour{width:4px;height:35px;background:#fff}
-.minute{width:3px;height:50px;background:#fff}
-.second{width:2px;height:58px;background:red}
-
-.digital{
-  position:absolute;
-  left:12px;
-  top:60px;
-  font-size:11px;
-  color:#fff;
 }
 
 /* WEATHER ICON */
 .weather-icon{
-  font-size:34px;
+  font-size:32px;
   animation:float 2s infinite alternate;
 }
 
@@ -111,23 +98,41 @@ body{
   to{transform:translateY(-6px)}
 }
 
-/* FOOTER GRID */
-.footerstats{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:6px;
+/* CLOCK */
+.clock{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:120px;
+  height:120px;
+  border-radius:50%;
   background:var(--accent);
-  padding:10px;
-  color:#fff;
-  text-align:center;
-  flex-shrink:0;
-  font-size:12px;
+  border:5px solid #fff;
 }
 
-@media(min-width:600px){
-  .footerstats{
-    grid-template-columns:repeat(4,1fr);
-  }
+.hand{
+  position:absolute;
+  bottom:50%;
+  left:50%;
+  transform-origin:bottom;
+}
+
+.hour{width:4px;height:30px;background:#fff}
+.minute{width:3px;height:42px;background:#fff}
+.second{width:2px;height:50px;background:red}
+
+.digital{
+  position:absolute;
+  left:10px;
+  top:50px;
+  font-size:10px;
+  color:#fff;
+}
+
+/* MAIN TEXT */
+#temp{
+  font-size:32px;
+  margin-top:5px;
 }
 
 .badge{
@@ -136,6 +141,37 @@ body{
   background:#ff9800;
   color:#fff;
   font-size:11px;
+  display:inline-block;
+}
+
+/* FOOTER GRID */
+.footerstats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:6px;
+  background:var(--accent);
+  padding:8px;
+  color:#fff;
+  text-align:center;
+  font-size:11px;
+  flex-shrink:0;
+}
+
+@media(min-width:600px){
+  .footerstats{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+
+/* 🧠 SMART RESPONSIVE SCALE */
+@media(max-height:700px){
+  #temp{font-size:28px}
+  .clock{width:105px;height:105px}
+}
+
+@media(max-height:600px){
+  #temp{font-size:24px}
+  .clock{width:95px;height:95px}
 }
 </style>
 </head>
@@ -143,7 +179,7 @@ body{
 <body>
 
 <div class='card'>
-  <div class='topbar'>🌦 MARINDUQUE LIVE WEATHER STATION</div>
+  <div class='topbar'>🌦 SHAO WEATHER PRO</div>
 
   <div class='header'>
     <h3 id='date'></h3>
@@ -151,30 +187,16 @@ body{
 
     <div style='display:flex;align-items:center;gap:10px'>
       <div class='weather-icon' id='icon'>☀️</div>
-      <div id='conditionLabel' style='font-size:16px;font-weight:bold'>SUNNY</div>
+      <div id='conditionLabel' style='font-weight:bold'>SUNNY</div>
     </div>
 
-    <div style='font-size:34px' id='temp'>--°C</div>
+    <div id='temp'>--°C</div>
     <div>Heat Index <span id='heat'>--°C</span></div>
 
     <div id='signalBadge' class='badge'>No Signal</div>
 
+    <!-- CLOCK -->
     <div class='clock'>
-      <div style='position:absolute;inset:0;color:white;font-size:11px'>
-        <span style='position:absolute;top:4px;left:62px'>12</span>
-        <span style='position:absolute;top:12px;right:30px'>1</span>
-        <span style='position:absolute;top:30px;right:10px'>2</span>
-        <span style='position:absolute;top:60px;right:2px'>3</span>
-        <span style='position:absolute;bottom:30px;right:10px'>4</span>
-        <span style='position:absolute;bottom:12px;right:30px'>5</span>
-        <span style='position:absolute;bottom:4px;left:64px'>6</span>
-        <span style='position:absolute;bottom:12px;left:30px'>7</span>
-        <span style='position:absolute;bottom:30px;left:10px'>8</span>
-        <span style='position:absolute;top:60px;left:2px'>9</span>
-        <span style='position:absolute;top:30px;left:10px'>10</span>
-        <span style='position:absolute;top:12px;left:30px'>11</span>
-      </div>
-
       <div class='hand hour' id='hour'></div>
       <div class='hand minute' id='minute'></div>
       <div class='hand second' id='second'></div>
@@ -191,7 +213,7 @@ body{
     <div><small>GUST</small><div id='gust2'></div></div>
   </div>
 
-  <div class='bottombar'>SHAO WEATHER MONITORING <span id='last'></span></div>
+  <div class='bottombar'>SHAO SYSTEM <span id='last'></span></div>
 </div>
 
 <script>
@@ -203,6 +225,7 @@ const firebaseConfig={
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database().ref('weather');
 
+/* CLOCK */
 function updateClock(){
   let n=new Date(),
   h=n.getHours()%12,
@@ -222,9 +245,13 @@ function updateClock(){
 setInterval(updateClock,1000);
 updateClock();
 
+/* DATA */
 db.on('value',snap=>{
   let d=snap.val();
-  if(!d)return;
+  if(!d){
+    signalBadge.innerHTML="❌ NO DATA";
+    return;
+  }
 
   condition.innerHTML=d.condition;
   conditionLabel.innerHTML=d.condition.toUpperCase();
@@ -237,13 +264,23 @@ db.on('value',snap=>{
 
   heat.innerHTML=(parseFloat(d.temp)+(parseFloat(d.humidity)*0.1)).toFixed(1)+'°C';
 
-  signalBadge.innerHTML='⚠ '+d.signal;
   last.innerHTML=new Date(d.time).toLocaleString();
 
   icon.innerHTML=d.condition.includes('Rain')?'🌧️':
                  d.condition.includes('Cloud')?'☁️':'☀️';
 
-  status.innerHTML=(Date.now()-d.time<15000)?'🟢 ONLINE':'🔴 OFFLINE';
+  /* SMART ONLINE/OFFLINE */
+  let diff=Date.now()-d.time;
+  if(diff<15000){
+    status.innerHTML='🟢 ONLINE';
+    signalBadge.innerHTML='LIVE';
+  }else if(diff<60000){
+    status.innerHTML='🟡 DELAYED';
+    signalBadge.innerHTML='WEAK SIGNAL';
+  }else{
+    status.innerHTML='🔴 OFFLINE';
+    signalBadge.innerHTML='NO SIGNAL';
+  }
 });
 </script>
 
