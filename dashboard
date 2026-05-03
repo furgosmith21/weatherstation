@@ -1,10 +1,10 @@
+```html id="v6m2ra"
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Weather Station</title>
+<title>Weather Station Live</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -17,30 +17,28 @@ background:#08131f;
 color:white;
 text-align:center;
 }
-
 .header{
-padding:20px;
+background:#10263d;
+padding:18px;
 font-size:28px;
 font-weight:bold;
-background:#10263d;
 }
-
 .card{
 background:#16314d;
 margin:12px;
 padding:18px;
 border-radius:14px;
 font-size:22px;
-box-shadow:0 0 10px rgba(0,0,0,.3);
+box-shadow:0 0 10px rgba(0,0,0,.35);
 }
-
 .big{
 font-size:34px;
 font-weight:bold;
 }
-
+.green{color:#00ff88;}
+.red{color:#ff4444;}
 .footer{
-padding:20px;
+padding:18px;
 font-size:14px;
 color:#aaa;
 }
@@ -49,10 +47,9 @@ color:#aaa;
 
 <body>
 
-<div class="header">
-🌦 WEATHER STATION LIVE
-</div>
+<div class="header">🌦 WEATHER STATION LIVE</div>
 
+<div class="card big" id="status">Checking...</div>
 <div class="card big" id="condition">Loading...</div>
 <div class="card" id="signal">Signal</div>
 
@@ -64,8 +61,10 @@ color:#aaa;
 <div class="card" id="wind">Wind</div>
 <div class="card" id="gust">Gust</div>
 
+<div class="card" id="last">Last Update</div>
+
 <div class="footer">
-Powered by ESP32 + LoRa + Firebase
+ESP32 + LoRa + Firebase + GitHub
 </div>
 
 <script>
@@ -81,20 +80,51 @@ const db = firebase.database().ref("weather");
 db.on("value", (snap)=>{
 
 let d = snap.val();
+if(!d) return;
 
-document.getElementById("condition").innerHTML = "Condition: " + d.condition;
-document.getElementById("signal").innerHTML = "Storm: " + d.signal;
+document.getElementById("condition").innerHTML =
+"Condition: " + d.condition;
 
-document.getElementById("temp").innerHTML = "🌡 Temp: " + d.temp + " °C";
-document.getElementById("hum").innerHTML = "💧 Humidity: " + d.humidity + " %";
-document.getElementById("pres").innerHTML = "⏲ Pressure: " + d.pressure + " hPa";
+document.getElementById("signal").innerHTML =
+"Storm: " + d.signal;
 
-document.getElementById("rain").innerHTML = "🌧 Rain: " + d.rain;
-document.getElementById("wind").innerHTML = "💨 Wind: " + d.wind;
-document.getElementById("gust").innerHTML = "🌪 Gust: " + d.gust;
+document.getElementById("temp").innerHTML =
+"🌡 Temp: " + d.temp + " °C";
+
+document.getElementById("hum").innerHTML =
+"💧 Humidity: " + d.humidity + " %";
+
+document.getElementById("pres").innerHTML =
+"⏲ Pressure: " + d.pressure + " hPa";
+
+document.getElementById("rain").innerHTML =
+"🌧 Rain: " + d.rain;
+
+document.getElementById("wind").innerHTML =
+"💨 Wind: " + d.wind;
+
+document.getElementById("gust").innerHTML =
+"🌪 Gust: " + d.gust;
+
+// online/offline check
+let age = (Date.now() - d.time) / 1000;
+
+if(age < 15){
+document.getElementById("status").innerHTML =
+"<span class='green'>🟢 RECEIVER ONLINE</span>";
+}else{
+document.getElementById("status").innerHTML =
+"<span class='red'>🔴 RECEIVER OFFLINE</span>";
+}
+
+let dt = new Date(d.time);
+
+document.getElementById("last").innerHTML =
+"Last Update: " + dt.toLocaleString();
 
 });
 </script>
 
 </body>
 </html>
+```
