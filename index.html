@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shao Weather Station</title>
+<title>Weather Station Live</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -16,12 +16,14 @@ background:#08131f;
 color:white;
 text-align:center;
 }
+
 .header{
 background:#10263d;
 padding:18px;
 font-size:28px;
 font-weight:bold;
 }
+
 .card{
 background:#16314d;
 margin:12px;
@@ -30,14 +32,17 @@ border-radius:14px;
 font-size:22px;
 box-shadow:0 0 10px rgba(0,0,0,.35);
 }
+
 .big{
 font-size:34px;
 font-weight:bold;
 }
+
 .green{color:#00ff88;}
 .red{color:#ff4444;}
+
 .footer{
-padding:18px;
+padding:20px;
 font-size:14px;
 color:#aaa;
 }
@@ -46,11 +51,11 @@ color:#aaa;
 
 <body>
 
-<div class="header">🌦 SHAO WEATHER STATION</div>
+<div class="header">🌦 WEATHER STATION LIVE</div>
 
 <div class="card big" id="status">Checking...</div>
 <div class="card big" id="condition">Loading...</div>
-<div class="card" id="signal">Signal</div>
+<div class="card" id="signal">Storm Signal</div>
 
 <div class="card" id="temp">Temp</div>
 <div class="card" id="hum">Humidity</div>
@@ -63,7 +68,8 @@ color:#aaa;
 <div class="card" id="last">Last Update</div>
 
 <div class="footer">
-ESP32 + LoRa + Firebase + GitHub
+//PUT YOUR FOOTER TEXT HERE
+  SHAO WEATHER MONITORING
 </div>
 
 <script>
@@ -73,7 +79,6 @@ databaseURL: "https://weatherstation-shao-default-rtdb.asia-southeast1.firebased
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const db = firebase.database().ref("weather");
 
 db.on("value", (snap)=>{
@@ -105,8 +110,7 @@ document.getElementById("wind").innerHTML =
 document.getElementById("gust").innerHTML =
 "🌪 Gust: " + d.gust;
 
-// online/offline check
-let age = (Date.now() - d.time) / 1000;
+let age = (Date.now() - d.time)/1000;
 
 if(age < 15){
 document.getElementById("status").innerHTML =
