@@ -23,7 +23,7 @@ body{margin:0;background:var(--bg);font-family:Arial;display:flex;justify-conten
 <div class='topbar'>🌦 MARINDUQUE LIVE WEATHER STATION </div>
 <div class='header'>
 <h2 id='date'></h2><div id='status'></div>
-<div class='weather-icon' id='icon'>☀️</div>
+<div style='display:flex;align-items:center;gap:12px'><div class='weather-icon' id='icon'>☀️</div><div id='conditionLabel' style='font-size:18px;font-weight:bold'>SUNNY</div></div>
 <div style='font-size:40px' id='temp'>--°C</div>
 <div>Heat Index <span id='heat'>--°C</span></div>
 <div>Pressure: <span id='pres'>--</span></div>
@@ -32,13 +32,13 @@ body{margin:0;background:var(--bg);font-family:Arial;display:flex;justify-conten
 <div class='clock'>
 <div style='position:absolute;inset:0;color:white;font-size:14px'>
 <span style='position:absolute;top:8px;left:74px'>12</span>
-<span style='position:absolute;top:24px;right:28px'>1</span>
+<span style='position:absolute;top:24px;right:28px'>1</span><span style='position:absolute;top:12px;right:48px'>2</span>
 <span style='position:absolute;top:55px;right:8px'>3</span>
-<span style='position:absolute;bottom:24px;right:28px'>5</span>
+<span style='position:absolute;top:55px;right:8px'>3</span><span style='position:absolute;bottom:55px;right:8px'>4</span><span style='position:absolute;bottom:24px;right:28px'>5</span>
 <span style='position:absolute;bottom:8px;left:76px'>6</span>
-<span style='position:absolute;bottom:24px;left:28px'>7</span>
+<span style='position:absolute;bottom:24px;left:28px'>7</span><span style='position:absolute;bottom:55px;left:8px'>8</span>
 <span style='position:absolute;top:55px;left:8px'>9</span>
-<span style='position:absolute;top:24px;left:28px'>11</span>
+<span style='position:absolute;top:55px;left:8px'>9</span><span style='position:absolute;top:12px;left:48px'>10</span><span style='position:absolute;top:24px;left:28px'>11</span>
 </div>
 <div class='hand hour' id='hour'></div><div class='hand minute' id='minute'></div><div class='hand second' id='second'></div><div class='digital' id='digital'></div></div>
 </div>
@@ -55,7 +55,7 @@ body{margin:0;background:var(--bg);font-family:Arial;display:flex;justify-conten
 <script>
 const firebaseConfig={apiKey:'AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU',databaseURL:'https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app/'};firebase.initializeApp(firebaseConfig);
 const db=firebase.database().ref('weather');
-function updateClock(){let n=new Date(),h=n.getHours()%12,m=n.getMinutes(),s=n.getSeconds();hour.style.transform=`translateX(-50%) rotate(${h*30+m/2}deg)`;minute.style.transform=`translateX(-50%) rotate(${m*6}deg)`;second.style.transform=`translateX(-50%) rotate(${s*6}deg)`;digital.innerText=n.toLocaleTimeString();date.innerText=n.toDateString();document.body.className=(n.getHours()>18||n.getHours()<6)?'':'light';}
+function updateClock(){let n=new Date(),h=n.getHours()%12,m=n.getMinutes(),s=n.getSeconds();hour.style.transform=`translateX(-50%) rotate(${h*30+m/2}deg)`;minute.style.transform=`translateX(-50%) rotate(${m*6}deg)`;second.style.transform=`translateX(-50%) rotate(${s*6}deg)`;digital.innerText=n.toLocaleTimeString('en-US',{hour12:true});date.innerText=n.toDateString();document.body.className=(n.getHours()>18||n.getHours()<6)?'':'light';}
 setInterval(updateClock,1000);updateClock();
-db.on('value',snap=>{let d=snap.val();if(!d)return;condition.innerHTML=d.condition;temp.innerHTML=d.temp+'°C';hum.innerHTML=d.humidity+'%';rain.innerHTML=d.rain;wind.innerHTML=d.wind;pres.innerHTML=d.pressure+' hPa';gust.innerHTML=d.gust;pres2.innerHTML=d.pressure+' hPa';gust2.innerHTML=d.gust;heat.innerHTML=(parseFloat(d.temp)+(parseFloat(d.humidity)*0.1)).toFixed(1)+'°C';signalBadge.innerHTML='⚠ '+d.signal;last.innerHTML=new Date(d.time).toLocaleString();icon.innerHTML=d.condition.includes('Rain')?'🌧️':d.condition.includes('Cloud')?'☁️':'☀️';status.innerHTML=(Date.now()-d.time<15000)?'🟢 ONLINE':'🔴 OFFLINE';});
+db.on('value',snap=>{let d=snap.val();if(!d)return;condition.innerHTML=d.condition;conditionLabel.innerHTML=d.condition.toUpperCase();temp.innerHTML=d.temp+'°C';hum.innerHTML=d.humidity+'%';rain.innerHTML=d.rain;wind.innerHTML=d.wind;pres.innerHTML=d.pressure+' hPa';gust.innerHTML=d.gust;pres2.innerHTML=d.pressure+' hPa';gust2.innerHTML=d.gust;heat.innerHTML=(parseFloat(d.temp)+(parseFloat(d.humidity)*0.1)).toFixed(1)+'°C';signalBadge.innerHTML='⚠ '+d.signal;last.innerHTML=new Date(d.time).toLocaleString();icon.innerHTML=d.condition.includes('Rain')?'🌧️':d.condition.includes('Cloud')?'☁️':'☀️';status.innerHTML=(Date.now()-d.time<15000)?'🟢 ONLINE':'🔴 OFFLINE';});
 </script></body></html>
