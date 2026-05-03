@@ -1,90 +1,35 @@
 <!DOCTYPE html>
-<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
+<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>SHAO Weather Monitoring</title>
 <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js'></script>
 <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js'></script>
 <style>
 :root{--bg:#08131f;--card:#efefef;--head:#10263d;--accent:#11b0b5;--text:#111}
 body.light{--bg:#eef4fa;--card:#fff;--head:#11b0b5;--text:#111}
-*{box-sizing:border-box; margin:0; padding:0;}
-body{margin:0;background:var(--bg);font-family:Arial;display:flex;justify-content:center;align-items:center;min-height:100vh;color:var(--text);transition:.4s; padding:10px;}
-.card{width:100%;max-width:520px;background:var(--card);border-radius:12px;overflow:hidden;}
-.topbar,.bottombar{background:var(--head);color:#fff;text-align:center;padding:12px 8px;font-weight:bold; font-size:16px;}
-.header{position:relative;padding:16px; min-height:auto; padding-bottom:140px;}
-h2#date{font-size:16px; margin-bottom:8px;}
-#status{font-size:14px; margin-bottom:12px;}
-
-/* Orasan - inayos para sa mas maliit na espasyo */
-.clock{position:absolute;bottom:15px;right:15px;width:120px;height:120px;border-radius:50%;background:var(--accent);border:5px solid #fff;}
-.hand{position:absolute;bottom:50%;left:50%;transform-origin:bottom}.hour{width:3px;height:30px;background:#fff}.minute{width:2px;height:45px;background:#fff}.second{width:1.5px;height:52px;background:red}
-.digital{position:absolute;left:16px;top:60px;font-size:10px;color:#fff}
-
-/* Mga impormasyon tungkol sa panahon */
-.weather-icon{font-size:36px;animation:float 2s infinite alternate; margin-bottom:8px;}
-#conditionLabel{font-size:16px; font-weight:bold; margin-bottom:8px;}
-#temp{font-size:32px; margin:8px 0; font-weight:bold;}
-#heat{font-size:14px; margin-bottom:12px; display:block;}
-.badge{padding:4px 8px;border-radius:20px;background:#ff9800;color:#fff;font-size:11px; display:inline-block; margin-top:8px;}
-
-.footerstats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;background:var(--accent);padding:12px 8px;color:#fff;text-align:center; font-size:14px;}
-.footerstats div{padding:6px 4px;}
-.footerstats small{font-size:11px; opacity:0.9; display:block; margin-bottom:2px;}
-
-@keyframes float{from{transform:translateY(0)}to{transform:translateY(-6px)}}
-
-/* Posisyon ng mga numero sa orasan - binawasan ang laki */
-.clock span{font-size:11px !important;}
-.clock span:nth-child(1){top:3px;left:54px !important;}
-.clock span:nth-child(2){top:10px;right:30px !important;}
-.clock span:nth-child(3){top:28px;right:10px !important;}
-.clock span:nth-child(4){top:56px;right:3px !important;}
-.clock span:nth-child(5){bottom:28px;right:10px !important;}
-.clock span:nth-child(6){bottom:10px;right:30px !important;}
-.clock span:nth-child(7){bottom:3px;left:56px !important;}
-.clock span:nth-child(8){bottom:10px;left:30px !important;}
-.clock span:nth-child(9){bottom:28px;left:10px !important;}
-.clock span:nth-child(10){top:56px;left:3px !important;}
-.clock span:nth-child(11){top:28px;left:10px !important;}
-.clock span:nth-child(12){top:10px;left:30px !important;}
-
-.bottombar{font-size:12px; padding:10px 5px;}
-
-@media(min-width:360px){
-    .header{padding:20px; padding-bottom:150px;}
-    .clock{width:130px;height:130px;}
-    .weather-icon{font-size:40px;}
-    #temp{font-size:36px;}
-    .footerstats{grid-template-columns:repeat(3,1fr); font-size:15px;}
-}
-
-@media(min-width:600px){
-    .header{min-height:290px; padding:22px; padding-bottom:22px;}
-    .clock{position:absolute;top:25px;right:18px;width:160px;height:160px;border-radius:50%;background:var(--accent);border:8px solid #fff}
-    .footerstats{grid-template-columns:repeat(4,1fr);gap:8px; padding:16px; font-size:16px;}
-    .topbar,.bottombar{padding:14px; font-size:18px;}
-    h2#date{font-size:20px;}
-    .weather-icon{font-size:48px;}
-    #temp{font-size:40px;}
-    .badge{font-size:12px; padding:5px 10px;}
-    .clock span{font-size:13px !important;}
-    .digital{font-size:12px;}
-}
+body{margin:0;background:var(--bg);font-family:Arial;display:flex;justify-content:center;align-items:center;min-height:100vh;color:var(--text);transition:.4s}
+.card{width:95%;max-width:520px;background:var(--card);border-radius:12px;overflow:hidden}
+.topbar,.bottombar{background:var(--head);color:#fff;text-align:center;padding:14px;font-weight:bold}
+.header{position:relative;padding:22px;min-height:290px}
+.clock{position:absolute;top:25px;right:18px;width:160px;height:160px;border-radius:50%;background:var(--accent);border:8px solid #fff}
+.hand{position:absolute;bottom:50%;left:50%;transform-origin:bottom}.hour{width:4px;height:40px;background:#fff}.minute{width:3px;height:58px;background:#fff}.second{width:2px;height:65px;background:red}
+.digital{position:absolute;left:22px;top:72px;font-size:12px;color:#fff}
+.footerstats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;background:var(--accent);padding:16px;color:#fff;text-align:center}
+.weather-icon{font-size:40px;animation:float 2s infinite alternate}.badge{padding:5px 10px;border-radius:20px;background:#ff9800;color:#fff;font-size:12px}
+@keyframes float{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+@media(min-width:600px){.footerstats{grid-template-columns:repeat(4,1fr)}}
 </style></head>
 <body>
 <div class='card'>
 <div class='topbar'>🌦 MARINDUQUE LIVE WEATHER STATION</div>
 <div class='header'>
 <h2 id='date'></h2><div id='status'></div>
-<div style='display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px'>
-<div class='weather-icon' id='icon'>☀️</div>
-<div id='conditionLabel' style='font-size:18px;font-weight:bold'>SUNNY</div>
-</div>
-<div style='font-size:32px; font-weight:bold;' id='temp'>--°C</div>
-<div style='font-size:14px; margin:6px 0'>Heat Index <span id='heat'>--°C</span></div>
-<div id='signalBadge' class='badge'>No Signal</div>
+<div style='display:flex;align-items:center;gap:12px'><div class='weather-icon' id='icon'>☀️</div><div id='conditionLabel' style='font-size:18px;font-weight:bold'>SUNNY</div></div>
+<div style='font-size:40px' id='temp'>--°C</div>
+<div>Heat Index <span id='heat'>--°C</span></div>
 
+<div id='signalBadge' class='badge'>No Signal</div>
 <div class='clock'>
-<div style='position:absolute;inset:0;color:white;'>
+<div style='position:absolute;inset:0;color:white;font-size:13px'>
 <span style='position:absolute;top:4px;left:72px'>12</span>
 <span style='position:absolute;top:14px;right:40px'>1</span>
 <span style='position:absolute;top:38px;right:14px'>2</span>
@@ -98,8 +43,7 @@ h2#date{font-size:16px; margin-bottom:8px;}
 <span style='position:absolute;top:38px;left:14px'>10</span>
 <span style='position:absolute;top:14px;left:40px'>11</span>
 </div>
-<div class='hand hour' id='hour'></div><div class='hand minute' id='minute'></div><div class='hand second' id='second'></div><div class='digital' id='digital'></div>
-</div>
+<div class='hand hour' id='hour'></div><div class='hand minute' id='minute'></div><div class='hand second' id='second'></div><div class='digital' id='digital'></div></div>
 </div>
 <div class='footerstats'>
 <div><small>WEATHER</small><div id='condition'></div></div>
@@ -109,7 +53,7 @@ h2#date{font-size:16px; margin-bottom:8px;}
 <div><small>PRESSURE</small><div id='pres2'></div></div>
 <div><small>GUST</small><div id='gust2'></div></div>
 </div>
-<div class='bottombar'>SHAO WEATHER MONITORING <span id='last'></span></div>
+<div class='bottombar'>SHAO WEATHER MONITORING  <span id='last'></span></div>
 </div>
 <script>
 const firebaseConfig={apiKey:'AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU',databaseURL:'https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app/'};firebase.initializeApp(firebaseConfig);
@@ -117,4 +61,4 @@ const db=firebase.database().ref('weather');
 function updateClock(){let n=new Date(),h=n.getHours()%12,m=n.getMinutes(),s=n.getSeconds();hour.style.transform=`translateX(-50%) rotate(${h*30+m/2}deg)`;minute.style.transform=`translateX(-50%) rotate(${m*6}deg)`;second.style.transform=`translateX(-50%) rotate(${s*6}deg)`;digital.innerText=n.toLocaleTimeString('en-US',{hour12:true});date.innerText=n.toDateString();document.body.className=(n.getHours()>18||n.getHours()<6)?'':'light';}
 setInterval(updateClock,1000);updateClock();
 db.on('value',snap=>{let d=snap.val();if(!d)return;condition.innerHTML=d.condition;conditionLabel.innerHTML=d.condition.toUpperCase();temp.innerHTML=d.temp+'°C';hum.innerHTML=d.humidity+'%';rain.innerHTML=d.rain;wind.innerHTML=d.wind;pres.innerHTML=d.pressure+' hPa';gust.innerHTML=d.gust;pres2.innerHTML=d.pressure+' hPa';gust2.innerHTML=d.gust;heat.innerHTML=(parseFloat(d.temp)+(parseFloat(d.humidity)*0.1)).toFixed(1)+'°C';signalBadge.innerHTML='⚠ '+d.signal;last.innerHTML=new Date(d.time).toLocaleString();icon.innerHTML=d.condition.includes('Rain')?'🌧️':d.condition.includes('Cloud')?'☁️':'☀️';status.innerHTML=(Date.now()-d.time<15000)?'🟢 ONLINE':'🔴 OFFLINE';});
-</script></body></html>
+</script></body></html> kaya mo ba iadjust ang size ng dasboard maliit kase siya sa android phone screen
