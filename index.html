@@ -199,9 +199,7 @@ db.on('value', snap => {
 let d = snap.val();
 if (!d) return;
 
-// ======================
-// RAW VALUES (SAFE)
-// ======================
+// ================= SAFE PARSE =================
 let tempVal = parseFloat(d.temp);
 let humVal = parseFloat(d.humidity);
 let pressVal = parseFloat(d.pressure);
@@ -209,11 +207,8 @@ let rainVal = parseFloat(d.rain);
 let windVal = parseFloat(d.wind);
 let gustVal = parseFloat(d.gust);
 let dirVal = parseFloat(d.winddir);
-let cardVal = d.cardinal || "N";
 
-// ======================
-// FIX DISPLAY VALUES
-// ======================
+// fallback safety
 if (isNaN(tempVal)) tempVal = null;
 if (isNaN(humVal)) humVal = 0;
 if (isNaN(pressVal)) pressVal = 0;
@@ -222,14 +217,12 @@ if (isNaN(windVal)) windVal = 0;
 if (isNaN(gustVal)) gustVal = 0;
 if (isNaN(dirVal)) dirVal = 0;
 
-// ======================
-// UI DISPLAY
-// ======================
+// ================= DISPLAY =================
 
 // TEMP
 temp.innerHTML = tempVal !== null ? tempVal.toFixed(1) + "°C" : "--°C";
 
-// HUMIDITY (WHOLE NUMBER)
+// HUMIDITY
 hum.innerHTML = Math.round(humVal) + "%";
 
 // PRESSURE / WIND / RAIN
@@ -238,42 +231,29 @@ wind.innerHTML = windVal.toFixed(1);
 rain.innerHTML = rainVal.toFixed(1);
 gust2.innerHTML = gustVal.toFixed(1);
 
-// WIND DIRECTION
-windDir.innerHTML = cardVal + " (" + dirVal + "°)";
+// WIND DIR
+windDir.innerHTML = (d.cardinal || "N") + " (" + dirVal + "°)";
 
-// ======================
 // FEELS LIKE (SAFE)
-// ======================
 let feelsLike = (tempVal ?? 0) + (humVal * 0.1);
 heat.innerHTML = feelsLike.toFixed(1) + "°C";
 
-// ======================
-// CONDITION / ICON
-// ======================
+// CONDITION
 let cond = d.condition || "--";
 if (cond === "PARTLY CLOUDY") cond = "P. CLOUDY";
 conditionLabel.innerHTML = cond.toUpperCase();
 
+// ICON
 icon.innerHTML =
 cond.includes("Rain") ? "🌧️" :
 cond.includes("Cloud") ? "☁️" : "☀️";
 
-// ======================
 // SIGNAL SYSTEM
-// ======================
 let signal = 0;
-
 if (gustVal > 50 || windVal > 30) signal = 1;
 if (gustVal > 60 || windVal > 40) signal = 2;
 if (gustVal > 70) signal = 3;
 
 signalBadge.innerHTML = "SIGNAL #" + signal;
-
-// ======================
-// STATUS TIME SAFE
-// ======================
-last.innerHTML = d.time
-? new Date(d.time).toLocaleString()
-: "--";
 
 });
