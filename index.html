@@ -93,6 +93,7 @@ font-size:12px
 .footerstats{grid-template-columns:repeat(4,1fr)}
 }
 </style>
+
 </head>
 
 <body>
@@ -118,12 +119,11 @@ Feels Like <span id='heat'>--°C</span>
 </div>
 
 <div style='margin-top:12px'>
-<span id='signalBadge' class='badge'>LIVE DATA</span>
+<span id='signalBadge' class='badge'>SIGNAL: --</span>
 </div>
 
 <div class='clock'>
 <div style='position:absolute;inset:0;color:white;font-size:13px'>
-
 <span style='position:absolute;top:4px;left:72px'>12</span>
 <span style='position:absolute;top:14px;right:40px'>1</span>
 <span style='position:absolute;top:38px;right:14px'>2</span>
@@ -137,7 +137,6 @@ Feels Like <span id='heat'>--°C</span>
 <span style='position:absolute;top:38px;left:14px'>10</span>
 <span style='position:absolute;top:14px;left:40px'>11</span>
 </div>
-
 
 <div class='hand hour' id='hour'></div>
 <div class='hand minute' id='minute'></div>
@@ -197,12 +196,12 @@ setInterval(updateClock,1000);
 updateClock();
 
 db.on('value',snap=>{
-let d=snap.val();
-if(!d)return;
+let d = snap.val();
+if(!d) return;
 
 // SAFE VALUES
 let temp = parseFloat(d.temp || 0);
-let humi = parseFloat(d.humidity || 0);
+let hum = parseFloat(d.humidity || 0);
 let press = parseFloat(d.pressure || 0);
 let rain = parseFloat(d.rain || 0);
 let wind = parseFloat(d.wind || 0);
@@ -210,11 +209,18 @@ let gust = parseFloat(d.gust || 0);
 let dir = parseFloat(d.winddir || 0);
 let card = d.cardinal || "N";
 
-// DISPLAY
-conditionLabel.innerHTML = (d.condition || "--").toUpperCase();
-temp.innerHTML = temp.toFixed(1) + '°C';
+// CONDITION SHORTEN
+let cond = d.condition || "--";
+if(cond === "PARTLY CLOUDY") cond = "P. CLOUDY";
+conditionLabel.innerHTML = cond.toUpperCase();
 
-hum.innerHTML = Math.round(humi) + '%';
+// TEMP SAFE
+temp.innerHTML = d.temp ? temp.toFixed(1) + '°C' : "--°C";
+
+// HUMIDITY WHOLE NUMBER
+hum.innerHTML = Math.round(hum) + '%';
+
+// OTHER VALUES
 rain.innerHTML = rain.toFixed(1);
 wind.innerHTML = wind.toFixed(1);
 pres2.innerHTML = press.toFixed(1) + ' hPa';
@@ -223,8 +229,8 @@ gust2.innerHTML = gust.toFixed(1);
 // WIND DIR
 windDir.innerHTML = card + " (" + dir + "°)";
 
-// FEELS LIKE (safe formula)
-let feelsLike = temp + (humi * 0.1);
+// FEELS LIKE
+let feelsLike = temp + (hum * 0.1);
 heat.innerHTML = feelsLike.toFixed(1) + '°C';
 
 // ICON
@@ -232,8 +238,18 @@ icon.innerHTML =
 (d.condition?.includes('Rain')) ? '🌧️' :
 (d.condition?.includes('Cloud')) ? '☁️' : '☀️';
 
-// STATUS
-last.innerHTML = d.time ? new Date(d.time).toLocaleString() : "--";
+// SIGNAL LEVEL
+let signal = 0;
+
+if(gust > 50 || wind > 30) signal = 1;
+if(gust > 60 || wind > 40) signal = 2;
+if(gust > 70) signal = 3;
+
+signalBadge.innerHTML = "SIGNAL #" + signal;
+
+// STATUS (optional safe)
+status.innerHTML = d.time ? "" : "";
+
 });
 
 </script>
