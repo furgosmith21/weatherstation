@@ -195,64 +195,85 @@ document.body.className=(n.getHours()>18||n.getHours()<6)?'':'light';
 setInterval(updateClock,1000);
 updateClock();
 
-db.on('value',snap=>{
+db.on('value', snap => {
 let d = snap.val();
-if(!d) return;
+if (!d) return;
 
-// SAFE VALUES
-let temp = parseFloat(d.temp || 0);
-let hum = parseFloat(d.humidity || 0);
-let press = parseFloat(d.pressure || 0);
-let rain = parseFloat(d.rain || 0);
-let wind = parseFloat(d.wind || 0);
-let gust = parseFloat(d.gust || 0);
-let dir = parseFloat(d.winddir || 0);
-let card = d.cardinal || "N";
+// ======================
+// RAW VALUES (SAFE)
+// ======================
+let tempVal = parseFloat(d.temp);
+let humVal = parseFloat(d.humidity);
+let pressVal = parseFloat(d.pressure);
+let rainVal = parseFloat(d.rain);
+let windVal = parseFloat(d.wind);
+let gustVal = parseFloat(d.gust);
+let dirVal = parseFloat(d.winddir);
+let cardVal = d.cardinal || "N";
 
-// CONDITION SHORTEN
+// ======================
+// FIX DISPLAY VALUES
+// ======================
+if (isNaN(tempVal)) tempVal = null;
+if (isNaN(humVal)) humVal = 0;
+if (isNaN(pressVal)) pressVal = 0;
+if (isNaN(rainVal)) rainVal = 0;
+if (isNaN(windVal)) windVal = 0;
+if (isNaN(gustVal)) gustVal = 0;
+if (isNaN(dirVal)) dirVal = 0;
+
+// ======================
+// UI DISPLAY
+// ======================
+
+// TEMP
+temp.innerHTML = tempVal !== null ? tempVal.toFixed(1) + "°C" : "--°C";
+
+// HUMIDITY (WHOLE NUMBER)
+hum.innerHTML = Math.round(humVal) + "%";
+
+// PRESSURE / WIND / RAIN
+pres2.innerHTML = pressVal.toFixed(1) + " hPa";
+wind.innerHTML = windVal.toFixed(1);
+rain.innerHTML = rainVal.toFixed(1);
+gust2.innerHTML = gustVal.toFixed(1);
+
+// WIND DIRECTION
+windDir.innerHTML = cardVal + " (" + dirVal + "°)";
+
+// ======================
+// FEELS LIKE (SAFE)
+// ======================
+let feelsLike = (tempVal ?? 0) + (humVal * 0.1);
+heat.innerHTML = feelsLike.toFixed(1) + "°C";
+
+// ======================
+// CONDITION / ICON
+// ======================
 let cond = d.condition || "--";
-if(cond === "PARTLY CLOUDY") cond = "P. CLOUDY";
+if (cond === "PARTLY CLOUDY") cond = "P. CLOUDY";
 conditionLabel.innerHTML = cond.toUpperCase();
 
-// TEMP SAFE
-temp.innerHTML = d.temp ? temp.toFixed(1) + '°C' : "--°C";
-
-// HUMIDITY WHOLE NUMBER
-hum.innerHTML = Math.round(hum) + '%';
-
-// OTHER VALUES
-rain.innerHTML = rain.toFixed(1);
-wind.innerHTML = wind.toFixed(1);
-pres2.innerHTML = press.toFixed(1) + ' hPa';
-gust2.innerHTML = gust.toFixed(1);
-
-// WIND DIR
-windDir.innerHTML = card + " (" + dir + "°)";
-
-// FEELS LIKE
-let feelsLike = temp + (hum * 0.1);
-heat.innerHTML = feelsLike.toFixed(1) + '°C';
-
-// ICON
 icon.innerHTML =
-(d.condition?.includes('Rain')) ? '🌧️' :
-(d.condition?.includes('Cloud')) ? '☁️' : '☀️';
+cond.includes("Rain") ? "🌧️" :
+cond.includes("Cloud") ? "☁️" : "☀️";
 
-// SIGNAL LEVEL
+// ======================
+// SIGNAL SYSTEM
+// ======================
 let signal = 0;
 
-if(gust > 50 || wind > 30) signal = 1;
-if(gust > 60 || wind > 40) signal = 2;
-if(gust > 70) signal = 3;
+if (gustVal > 50 || windVal > 30) signal = 1;
+if (gustVal > 60 || windVal > 40) signal = 2;
+if (gustVal > 70) signal = 3;
 
 signalBadge.innerHTML = "SIGNAL #" + signal;
 
-// STATUS (optional safe)
-status.innerHTML = d.time ? "" : "";
+// ======================
+// STATUS TIME SAFE
+// ======================
+last.innerHTML = d.time
+? new Date(d.time).toLocaleString()
+: "--";
 
 });
-
-</script>
-
-</body>
-</html>
