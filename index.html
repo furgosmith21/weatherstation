@@ -317,7 +317,14 @@ SHAO WEATHER STATION
 
 <script>
 
+const firebaseConfig = {
+  apiKey: "AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU",
+  authDomain: "weatherstation-shao.firebaseapp.com",
+  databaseURL: "https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "weatherstation-shao",
+};
 
+firebase.initializeApp(firebaseConfig);
 function updateClock(){
 
 let now=new Date();
