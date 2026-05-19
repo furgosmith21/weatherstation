@@ -89,11 +89,13 @@ font-weight:bold;
 .signal{
 margin-top:20px;
 display:inline-block;
-background:orange;
-color:white;
 padding:12px 25px;
 border-radius:30px;
 font-size:25px;
+font-weight:bold;
+color:white;
+background:green;
+transition:.3s;
 }
 
 .clockContainer{
@@ -250,8 +252,8 @@ Feels Like
 </div>
 </div>
 
-<div class="signal">
-📡 No Signal
+<div class="signal" id="stormSignal">
+🌀 Signal No.0
 </div>
 
 </div>
@@ -278,26 +280,26 @@ Feels Like
 <div class="box">
 
 🧭 WIND DIRECTION<br>
-<span id="windDirection">N</span><br><br>
+<span id="windDirection"></span><br><br>
 
 💧 HUMIDITY<br>
-<span id="humidity">76.99</span>%<br><br>
+<span id="humidity"></span>%<br><br>
 
 📉 PRESSURE<br>
-<span id="pressure">1008</span> hPa
+<span id="pressure"></span> hPa
 
 </div>
 
 <div class="box">
 
 🌧️ RAIN<br>
-<span id="rain">0</span> mm<br><br>
+<span id="rain"></span> mm<br><br>
 
 🌬️ WIND<br>
-<span id="wind">0</span> km/h<br><br>
+<span id="wind"></span> km/h<br><br>
 
 💨 GUST<br>
-<span id="gust">0</span> km/h
+<span id="gust"></span> km/h
 
 </div>
 
@@ -318,31 +320,32 @@ function updateClock(){
 
 let now=new Date();
 
-date.innerHTML=
+document.getElementById("date").innerHTML=
 now.toDateString();
 
-digital.innerHTML=
+document.getElementById("digital").innerHTML=
 now.toLocaleTimeString();
 
 let s=now.getSeconds();
 let m=now.getMinutes();
 let h=now.getHours();
 
-second.style.transform=
+document.getElementById("second").style.transform=
 `translateX(-50%) rotate(${s*6}deg)`;
 
-minute.style.transform=
+document.getElementById("minute").style.transform=
 `translateX(-50%) rotate(${m*6}deg)`;
 
-hour.style.transform=
+document.getElementById("hour").style.transform=
 `translateX(-50%) rotate(${h*30+m/2}deg)`;
 
 }
 
 setInterval(updateClock,1000);
-
 updateClock();
 
+
+// FEELS LIKE
 function computeHeatIndex(T,R){
 
 let HI=
@@ -360,19 +363,16 @@ return HI.toFixed(1);
 
 }
 
-feelsLike.innerHTML=
-computeHeatIndex(
-temperature,
-humidity
-);
+document.getElementById("feelsLike").innerHTML=
+computeHeatIndex(temperature,humidity);
 
+
+// CLOCK NUMBERS
 const clock=document.getElementById("clock");
 
 function drawNumbers(){
 
-document
-.querySelectorAll(".number")
-.forEach(n=>n.remove());
+document.querySelectorAll(".number").forEach(n=>n.remove());
 
 let size=clock.offsetWidth;
 let center=size/2;
@@ -381,7 +381,6 @@ let radius=size*0.40;
 for(let i=1;i<=12;i++){
 
 let num=document.createElement("div");
-
 num.className="number";
 
 let angle=(i*30-90)*(Math.PI/180);
@@ -400,12 +399,51 @@ clock.appendChild(num);
 
 }
 
+// CALL FUNCTIONS (IMPORTANT)
 drawNumbers();
+window.addEventListener("resize",drawNumbers);
 
-window.addEventListener(
-"resize",
-drawNumbers
-);
+
+// TYHOON SIGNAL
+function updateStormSignal(level){
+
+const signal=document.getElementById("stormSignal");
+
+switch(level){
+
+case 1:
+signal.innerHTML="🌀 Signal No.1";
+signal.style.background="#2ECC71";
+break;
+
+case 2:
+signal.innerHTML="🌀 Signal No.2";
+signal.style.background="#F1C40F";
+break;
+
+case 3:
+signal.innerHTML="🌀 Signal No.3";
+signal.style.background="#E67E22";
+break;
+
+case 4:
+signal.innerHTML="🌀 Signal No.4";
+signal.style.background="#E74C3C";
+break;
+
+case 5:
+signal.innerHTML="🌀 Signal No.5";
+signal.style.background="#8E44AD";
+break;
+
+default:
+signal.innerHTML="🌀 Signal No.0";
+signal.style.background="#3498DB";
+
+}
+
+}
+
 
 </script>
 
