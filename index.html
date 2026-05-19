@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marinduque Live Weather</title>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+
 <style>
 
 *{
@@ -313,8 +317,6 @@ SHAO WEATHER STATION
 
 <script>
 
-let temperature=29.65;
-let humidity=76.99;
 
 function updateClock(){
 
@@ -401,6 +403,52 @@ clock.appendChild(num);
 
 // CALL FUNCTIONS (IMPORTANT)
 drawNumbers();
+firebase.database()
+.ref("weather")
+.on("value",(snapshot)=>{
+
+let data=snapshot.val();
+
+// TEMPERATURE
+document.getElementById("temp").innerHTML =
+data.temperature;
+
+// HUMIDITY
+document.getElementById("humidity").innerHTML =
+data.humidity;
+
+// PRESSURE
+document.getElementById("pressure").innerHTML =
+data.pressure;
+
+// WIND
+document.getElementById("wind").innerHTML =
+data.wind;
+
+// GUST
+document.getElementById("gust").innerHTML =
+data.gust;
+
+// RAIN
+document.getElementById("rain").innerHTML =
+data.rain;
+
+// WIND DIRECTION
+document.getElementById("windDirection").innerHTML =
+data.direction;
+
+// FEELS LIKE
+document.getElementById("feelsLike").innerHTML =
+computeHeatIndex(
+data.temperature,
+data.humidity
+);
+
+// STORM SIGNAL
+updateStormSignal(data.stormSignal);
+
+});
+
 window.addEventListener("resize",drawNumbers);
 
 
@@ -439,11 +487,8 @@ break;
 default:
 signal.innerHTML="🌀 Signal No.0";
 signal.style.background="#3498DB";
-
 }
-
 }
-
 
 </script>
 
