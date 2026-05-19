@@ -8,109 +8,57 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:#e8e8e8;
-padding:15px;
-}
+/* ===== BASIC UI ===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#e8e8e8;padding:15px}
 
 .container{
-max-width:1000px;
-margin:auto;
-background:white;
-border-radius:25px;
-overflow:hidden;
+max-width:1000px;margin:auto;background:#fff;
+border-radius:25px;overflow:hidden;
 box-shadow:0 4px 15px rgba(0,0,0,.2);
 }
 
 .header{
-background:#13B8BF;
-color:white;
-padding:25px;
-text-align:center;
-font-size:38px;
-font-weight:bold;
+background:#13B8BF;color:#fff;
+padding:25px;text-align:center;
+font-size:38px;font-weight:bold;
 }
 
 .main{
-display:flex;
-flex-wrap:wrap;
-padding:30px;
-justify-content:space-between;
+display:flex;flex-wrap:wrap;
+padding:30px;justify-content:space-between;
 align-items:center;
 }
 
-.left{
-width:45%;
-}
+.left{width:45%}
 
-.date{
-font-size:55px;
-font-weight:bold;
-margin-bottom:30px;
-}
+.date{font-size:55px;font-weight:bold;margin-bottom:20px}
 
-.weatherRow{
-display:flex;
-align-items:center;
-gap:20px;
-margin-bottom:20px;
-}
+.temp{font-size:90px;margin-top:15px}
 
-.weatherIcon{
-font-size:70px;
-}
+.feels{margin-top:30px;font-size:28px}
 
-.weatherText{
-font-size:30px;
-font-weight:bold;
-}
-
-.temp{
-font-size:90px;
-margin-top:15px;
-}
-
-.feels{
-margin-top:40px;
-font-size:28px;
-}
-
-.feelsValue{
-font-size:55px;
-font-weight:bold;
-}
+.feelsValue{font-size:50px;font-weight:bold}
 
 .signal{
 margin-top:20px;
 display:inline-block;
 padding:12px 25px;
 border-radius:30px;
-font-size:25px;
+font-size:22px;
 font-weight:bold;
 color:white;
-background:green;
+background:#3498DB;
 transition:.3s;
 }
 
-.clockContainer{
-position:relative;
-width:400px;
-height:400px;
-}
+/* CLOCK */
+.clockContainer{width:400px;height:400px;position:relative}
 
 .clock{
-width:100%;
-height:100%;
+width:100%;height:100%;
 background:#13B8BF;
 border:10px solid gold;
 border-radius:50%;
@@ -120,59 +68,41 @@ position:relative;
 .number{
 position:absolute;
 color:white;
-font-size:35px;
+font-size:30px;
 transform:translate(-50%,-50%);
 font-weight:bold;
 }
 
 .hand{
 position:absolute;
-left:50%;
-bottom:50%;
+left:50%;bottom:50%;
 transform-origin:bottom;
-border-radius:10px;
 }
 
-.hour{
-width:8px;
-height:90px;
-background:white;
-}
-
-.minute{
-width:6px;
-height:130px;
-background:white;
-}
-
-.second{
-width:3px;
-height:150px;
-background:red;
-}
+.hour{width:8px;height:90px;background:white}
+.minute{width:6px;height:130px;background:white}
+.second{width:3px;height:150px;background:red}
 
 .center{
 position:absolute;
-width:15px;
-height:15px;
+width:15px;height:15px;
 background:white;
 border-radius:50%;
-left:50%;
-top:50%;
+left:50%;top:50%;
 transform:translate(-50%,-50%);
 }
 
 .digital{
 position:absolute;
-bottom:90px; /* tinaas */
+bottom:80px;
 width:100%;
 text-align:center;
-font-size:20px; /* mas maliit */
+font-size:18px;
 font-weight:bold;
 color:white;
-letter-spacing:2px;
 }
 
+/* BOTTOM DATA */
 .bottom{
 background:#13B8BF;
 color:white;
@@ -183,44 +113,22 @@ gap:30px;
 text-align:center;
 }
 
-.box{
-font-size:25px;
-line-height:1.8;
-}
+.box{font-size:22px;line-height:1.8}
 
 .footer{
 background:#13B8BF;
 color:white;
 padding:20px;
 text-align:center;
-font-size:35px;
+font-size:30px;
 font-weight:bold;
 }
 
 @media(max-width:900px){
-
-.main{
-flex-direction:column;
-}
-
-.left{
-width:100%;
-margin-bottom:30px;
-}
-
-.clockContainer{
-width:300px;
-height:300px;
-}
-
-.date{
-font-size:40px;
-}
-
-.temp{
-font-size:60px;
-}
-
+.main{flex-direction:column}
+.left{width:100%}
+.clockContainer{width:300px;height:300px}
+.temp{font-size:60px}
 }
 
 </style>
@@ -230,9 +138,7 @@ font-size:60px;
 
 <div class="container">
 
-<div class="header">
-🌦 MARINDUQUE LIVE WEATHER MONITORING
-</div>
+<div class="header">🌦 MARINDUQUE LIVE WEATHER</div>
 
 <div class="main">
 
@@ -240,39 +146,25 @@ font-size:60px;
 
 <div class="date" id="date"></div>
 
-<div class="weatherRow">
-<div class="weatherIcon">☀️</div>
-<div class="weatherText">CLOUDY</div>
-</div>
-
-<div class="temp">
-<span id="temp">29.65</span>°C
-</div>
+<div class="temp"><span id="temp">--</span>°C</div>
 
 <div class="feels">
 Feels Like
-<div class="feelsValue">
-<span id="feelsLike">--</span>°C
-</div>
+<div class="feelsValue"><span id="feelsLike">--</span>°C</div>
 </div>
 
-<div class="signal" id="stormSignal">
-🌀 Signal No.0
-</div>
+<div class="signal" id="stormSignal">🌀 Signal No.0</div>
 
 </div>
 
 <div class="clockContainer">
 
 <div class="clock" id="clock">
-
 <div class="hand hour" id="hour"></div>
 <div class="hand minute" id="minute"></div>
 <div class="hand second" id="second"></div>
 <div class="center"></div>
-
 <div class="digital" id="digital"></div>
-
 </div>
 
 </div>
@@ -282,58 +174,42 @@ Feels Like
 <div class="bottom">
 
 <div class="box">
-
-🧭 WIND DIRECTION<br>
-<span id="windDirection"></span><br><br>
-
-💧 HUMIDITY<br>
-<span id="humidity"></span>%<br><br>
-
-📉 PRESSURE<br>
-<span id="pressure"></span> hPa
-
+🧭 WIND DIR<br><span id="windDirection"></span><br><br>
+💧 HUMIDITY<br><span id="humidity"></span>%<br><br>
+📉 PRESSURE<br><span id="pressure"></span> hPa
 </div>
 
 <div class="box">
-
-🌧️ RAIN<br>
-<span id="rain"></span> mm<br><br>
-
-🌬️ WIND<br>
-<span id="wind"></span> km/h<br><br>
-
-💨 GUST<br>
-<span id="gust"></span> km/h
-
+🌧️ RAIN<br><span id="rain"></span> mm<br><br>
+🌬️ WIND<br><span id="wind"></span> km/h<br><br>
+💨 GUST<br><span id="gust"></span> km/h
 </div>
 
 </div>
 
-<div class="footer">
-SHAO WEATHER STATION
-</div>
+<div class="footer">SHAO WEATHER STATION</div>
 
 </div>
 
 <script>
 
+/* ===== FIREBASE ===== */
 const firebaseConfig = {
-  apiKey: "AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU",
-  authDomain: "weatherstation-shao.firebaseapp.com",
-  databaseURL: "https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "weatherstation-shao",
+apiKey: "AIzaSyA-Il7Uh8nSXoP44UGGipBWWBIbmCxybUU",
+authDomain: "weatherstation-shao.firebaseapp.com",
+databaseURL: "https://weatherstation-shao-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "weatherstation-shao"
 };
 
 firebase.initializeApp(firebaseConfig);
+
+/* ===== CLOCK ===== */
 function updateClock(){
 
 let now=new Date();
 
-document.getElementById("date").innerHTML=
-now.toDateString();
-
-document.getElementById("digital").innerHTML=
-now.toLocaleTimeString();
+document.getElementById("date").innerHTML=now.toDateString();
+document.getElementById("digital").innerHTML=now.toLocaleTimeString();
 
 let s=now.getSeconds();
 let m=now.getMinutes();
@@ -353,30 +229,7 @@ document.getElementById("hour").style.transform=
 setInterval(updateClock,1000);
 updateClock();
 
-
-// FEELS LIKE
-function computeHeatIndex(T,R){
-
-let HI=
--8.784695+
-1.61139411*T+
-2.338549*R
--.14611605*T*R
--.012308094*T*T
--.016424828*R*R
-+.002211732*T*T*R
-+.00072546*T*R*R
--.000003582*T*T*R*R;
-
-return HI.toFixed(1);
-
-}
-
-document.getElementById("feelsLike").innerHTML=
-computeHeatIndex(temperature,humidity);
-
-
-// CLOCK NUMBERS
+/* ===== CLOCK NUMBERS ===== */
 const clock=document.getElementById("clock");
 
 function drawNumbers(){
@@ -401,101 +254,71 @@ num.style.left=x+"px";
 num.style.top=y+"px";
 
 num.innerHTML=i;
-
 clock.appendChild(num);
 
 }
 
 }
 
-// CALL FUNCTIONS (IMPORTANT)
 drawNumbers();
+window.addEventListener("resize",drawNumbers);
+
+/* ===== HEAT INDEX ===== */
+function computeHeatIndex(T,R){
+
+let HI=
+-8.784695+
+1.61139411*T+
+2.338549*R
+-.14611605*T*R
+-.012308094*T*T
+-.016424828*R*R
++.002211732*T*T*R
++.00072546*T*R*R
+-.000003582*T*T*R*R;
+
+return HI.toFixed(1);
+}
+
+/* ===== TYHOON SIGNAL ===== */
+function updateStormSignal(level){
+
+const el=document.getElementById("stormSignal");
+
+switch(level){
+
+case 1: el.innerHTML="🌀 Signal No.1"; el.style.background="#2ECC71"; break;
+case 2: el.innerHTML="🌀 Signal No.2"; el.style.background="#F1C40F"; break;
+case 3: el.innerHTML="🌀 Signal No.3"; el.style.background="#E67E22"; break;
+case 4: el.innerHTML="🌀 Signal No.4"; el.style.background="#E74C3C"; break;
+case 5: el.innerHTML="🌀 Signal No.5"; el.style.background="#8E44AD"; break;
+default: el.innerHTML="🌀 Signal No.0"; el.style.background="#3498DB";
+
+}
+
+}
+
+/* ===== LIVE FIREBASE DATA ===== */
 firebase.database()
 .ref("weather")
 .on("value",(snapshot)=>{
 
-let data=snapshot.val();
+let d=snapshot.val();
 
-// TEMPERATURE
-document.getElementById("temp").innerHTML =
-data.temperature;
+document.getElementById("temp").innerHTML=d.temperature;
+document.getElementById("humidity").innerHTML=d.humidity;
+document.getElementById("pressure").innerHTML=d.pressure;
+document.getElementById("wind").innerHTML=d.wind;
+document.getElementById("gust").innerHTML=d.gust;
+document.getElementById("rain").innerHTML=d.rain;
+document.getElementById("windDirection").innerHTML=d.direction;
 
-// HUMIDITY
-document.getElementById("humidity").innerHTML =
-data.humidity;
+document.getElementById("feelsLike").innerHTML=
+computeHeatIndex(d.temperature,d.humidity);
 
-// PRESSURE
-document.getElementById("pressure").innerHTML =
-data.pressure;
-
-// WIND
-document.getElementById("wind").innerHTML =
-data.wind;
-
-// GUST
-document.getElementById("gust").innerHTML =
-data.gust;
-
-// RAIN
-document.getElementById("rain").innerHTML =
-data.rain;
-
-// WIND DIRECTION
-document.getElementById("windDirection").innerHTML =
-data.direction;
-
-// FEELS LIKE
-document.getElementById("feelsLike").innerHTML =
-computeHeatIndex(
-data.temperature,
-data.humidity
-);
-
-// STORM SIGNAL
-updateStormSignal(data.stormSignal);
+updateStormSignal(d.stormSignal);
 
 });
-
-window.addEventListener("resize",drawNumbers);
-
-
-// TYHOON SIGNAL
-function updateStormSignal(level){
-
-const signal=document.getElementById("stormSignal");
-
-switch(level){
-
-case 1:
-signal.innerHTML="🌀 Signal No.1";
-signal.style.background="#2ECC71";
-break;
-
-case 2:
-signal.innerHTML="🌀 Signal No.2";
-signal.style.background="#F1C40F";
-break;
-
-case 3:
-signal.innerHTML="🌀 Signal No.3";
-signal.style.background="#E67E22";
-break;
-
-case 4:
-signal.innerHTML="🌀 Signal No.4";
-signal.style.background="#E74C3C";
-break;
-
-case 5:
-signal.innerHTML="🌀 Signal No.5";
-signal.style.background="#8E44AD";
-break;
-
-default:
-signal.innerHTML="🌀 Signal No.0";
-signal.style.background="#3498DB";
-}
-}
 
 </script>
 
