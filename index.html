@@ -420,7 +420,7 @@ document.querySelectorAll(".number").forEach(n=>n.remove());
 
 let size=clock.offsetWidth;
 let center=size/2;
-let radius=size*0.40;
+let radius=size*0.35;
 
 for(let i=1;i<=12;i++){
 
@@ -429,13 +429,17 @@ num.className="number";
 
 let angle=(i*30-90)*(Math.PI/180);
 
-let x=center+radius*Math.cos(angle);
-let y=center+radius*Math.sin(angle);
+let x=center+(radius*Math.cos(angle));
+let y=center+(radius*Math.sin(angle));
 
 num.style.left=x+"px";
 num.style.top=y+"px";
 
 num.innerHTML=i;
+
+// auto-size depende sa clock size
+num.style.fontSize=(size*0.08)+"px";
+
 clock.appendChild(num);
 
 }
