@@ -250,7 +250,6 @@ document.getElementById("minute").style.transform=
 
 document.getElementById("hour").style.transform=
 `translateX(-50%) rotate(${h*30+m/2}deg)`;
-
 }
 
 setInterval(updateClock,1000);
@@ -320,8 +319,9 @@ case 3: el.innerHTML="🌀 Signal No.3"; el.style.background="#E67E22"; break;
 case 4: el.innerHTML="🌀 Signal No.4"; el.style.background="#E74C3C"; break;
 case 5: el.innerHTML="🌀 Signal No.5"; el.style.background="#8E44AD"; break;
 default: el.innerHTML="🌀 Signal No.0"; el.style.background="#3498DB";
+
 }
-  
+
 }
 
 /* ===== LIVE FIREBASE DATA ===== */
