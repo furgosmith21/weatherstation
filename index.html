@@ -264,10 +264,7 @@ drawNumbers();
 window.addEventListener("resize",drawNumbers);
 
 /* ===== HEAT INDEX ===== */
-computeHeatIndex(
-parseFloat(d.temperature || 0),
-parseFloat(d.humidity || 0)
-);
+function computeHeatIndex(T,R){
 
 let HI=
 -8.784695+
