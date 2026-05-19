@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -326,7 +327,9 @@ Feels Like
 </div>
 
 <div class="signal" id="stormSignal">🌀 Signal No.0</div>
-
+<div class="signal" id="deviceStatus">
+🟢 STATION ONLINE
+</div>
 </div>
 
 <div class="clockContainer">
@@ -479,6 +482,7 @@ case 4: el.innerHTML="🌀 Signal No. 4"; el.style.background="#F50014"; break;
 case 5: el.innerHTML="🌀 Signal No. 5"; el.style.background="#F005EC"; break;
 default: el.innerHTML="🌀 Signal No. 0"; el.style.background="#42DC18";
 
+
 }
 
 }
@@ -546,9 +550,36 @@ parseFloat(d.temp || 0),
 parseFloat(d.humidity || 0)
 );
 updateStormSignal(d.stormSignal);
+window.lastReceive=Date.now()
 
 });
 
+
+setInterval(()=>{
+
+let status=
+document.getElementById("deviceStatus");
+
+if(Date.now()-window.lastReceive>20000){
+
+status.innerHTML=
+"🔴 STATION OFFLINE";
+
+status.style.background=
+"#E74C3C";
+
+}
+else{
+
+status.innerHTML=
+"🟢 STATION ONLINE";
+
+status.style.background=
+"#2ECC71";
+
+}
+
+},1000);
 </script>
 
 </body>
