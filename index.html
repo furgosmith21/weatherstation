@@ -131,6 +131,28 @@ font-weight:bold;
 .temp{font-size:60px}
 }
 
+.weatherStatus{
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:20px;
+font-size:28px;
+font-weight:bold;
+color:#333;
+}
+
+#weatherIcon{
+font-size:55px;
+animation:float 2s infinite ease-in-out;
+}
+
+@keyframes float{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-8px);}
+100%{transform:translateY(0px);}
+}
+
+
 </style>
 </head>
 
@@ -138,13 +160,18 @@ font-weight:bold;
 
 <div class="container">
 
-<div class="header">🌦 MARINDUQUE LIVE WEATHER</div>
+<div class="header">🌦 MARINDUQUE LIVE WEATHER MONITORING</div>
 
 <div class="main">
 
 <div class="left">
 
 <div class="date" id="date"></div>
+
+<div class="weatherStatus">
+  <div id="weatherIcon">☀️</div>
+  <div id="weatherCondition">SUNNY</div>
+</div>
 
 <div class="temp"><span id="temp">--</span>°C</div>
 
@@ -293,9 +320,8 @@ case 3: el.innerHTML="🌀 Signal No.3"; el.style.background="#E67E22"; break;
 case 4: el.innerHTML="🌀 Signal No.4"; el.style.background="#E74C3C"; break;
 case 5: el.innerHTML="🌀 Signal No.5"; el.style.background="#8E44AD"; break;
 default: el.innerHTML="🌀 Signal No.0"; el.style.background="#3498DB";
-
 }
-
+  
 }
 
 /* ===== LIVE FIREBASE DATA ===== */
@@ -304,8 +330,47 @@ firebase.database()
 .on("value",(snapshot)=>{
 
 let d=snapshot.val();
-
 console.log(d);
+
+let temp = Number(d.temp || 0);
+let humidity = Number(d.humidity || 0);
+
+let condition=(d.condition || "SUNNY").toUpperCase();
+
+let icon="☀️";
+
+switch(condition){
+
+case "SUNNY":
+icon="☀️";
+break;
+
+case "PARTLY CLOUDY":
+icon="⛅";
+break;
+
+case "CLOUDY":
+icon="☁️";
+break;
+
+case "RAINY":
+icon="🌧️";
+break;
+
+case "THUNDERSTORM":
+icon="⛈️";
+break;
+
+case "WINDY":
+icon="🌬️";
+break;
+
+default:
+icon="🌤️";
+}
+
+document.getElementById("weatherIcon").innerHTML=icon;
+document.getElementById("weatherCondition").innerHTML=condition;
 
 document.getElementById("temp").innerHTML = Number(d.temp) || 0;
 document.getElementById("humidity").innerHTML = Math.round(Number(d.humidity) || 0);
@@ -317,7 +382,7 @@ document.getElementById("windDirection").innerHTML=d.winddir;
 
 document.getElementById("feelsLike").innerHTML=
 computeHeatIndex(
-parseFloat(d.temperature || 0),
+parseFloat(d.temp || 0),
 parseFloat(d.humidity || 0)
 );
 updateStormSignal(d.stormSignal);
