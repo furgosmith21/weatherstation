@@ -116,6 +116,7 @@ position:absolute;
 color:white;
 font-size:35px;
 transform:translate(-50%,-50%);
+font-weight:bold;
 }
 
 .hand{
@@ -157,12 +158,13 @@ transform:translate(-50%,-50%);
 
 .digital{
 position:absolute;
-bottom:60px;
+bottom:90px; /* tinaas */
 width:100%;
 text-align:center;
-font-size:28px;
+font-size:20px; /* mas maliit */
 font-weight:bold;
 color:white;
+letter-spacing:2px;
 }
 
 .bottom{
@@ -217,6 +219,7 @@ font-size:60px;
 
 </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -233,7 +236,7 @@ font-size:60px;
 
 <div class="weatherRow">
 <div class="weatherIcon">☀️</div>
-<div class="weatherText" id="weather">CLOUDY</div>
+<div class="weatherText">CLOUDY</div>
 </div>
 
 <div class="temp">
@@ -248,7 +251,7 @@ Feels Like
 </div>
 
 <div class="signal">
-No Signal
+📡 No Signal
 </div>
 
 </div>
@@ -270,30 +273,30 @@ No Signal
 
 </div>
 
-
 <div class="bottom">
 
 <div class="box">
-WEATHER<br>
-<span id="weather2">CLOUDY</span><br><br>
 
-HUMIDITY<br>
+🧭 WIND DIRECTION<br>
+<span id="windDirection">N</span><br><br>
+
+💧 HUMIDITY<br>
 <span id="humidity">76.99</span>%<br><br>
 
-PRESSURE<br>
+📉 PRESSURE<br>
 <span id="pressure">1008</span> hPa
-</div>
 
+</div>
 
 <div class="box">
 
-RAIN<br>
+🌧️ RAIN<br>
 <span id="rain">0</span> mm<br><br>
 
-WIND<br>
+🌬️ WIND<br>
 <span id="wind">0</span> km/h<br><br>
 
-GUST<br>
+💨 GUST<br>
 <span id="gust">0</span> km/h
 
 </div>
@@ -308,7 +311,6 @@ SHAO WEATHER STATION
 
 <script>
 
-//sample values
 let temperature=29.65;
 let humidity=76.99;
 
@@ -316,32 +318,30 @@ function updateClock(){
 
 let now=new Date();
 
-document.getElementById("date").innerHTML=
+date.innerHTML=
 now.toDateString();
 
-document.getElementById("digital").innerHTML=
+digital.innerHTML=
 now.toLocaleTimeString();
 
 let s=now.getSeconds();
 let m=now.getMinutes();
 let h=now.getHours();
 
-document.getElementById("second").style.transform=
+second.style.transform=
 `translateX(-50%) rotate(${s*6}deg)`;
 
-document.getElementById("minute").style.transform=
+minute.style.transform=
 `translateX(-50%) rotate(${m*6}deg)`;
 
-document.getElementById("hour").style.transform=
+hour.style.transform=
 `translateX(-50%) rotate(${h*30+m/2}deg)`;
 
 }
 
 setInterval(updateClock,1000);
+
 updateClock();
-
-
-//Feels Like computation
 
 function computeHeatIndex(T,R){
 
@@ -360,17 +360,23 @@ return HI.toFixed(1);
 
 }
 
-document.getElementById("feelsLike").innerHTML=
+feelsLike.innerHTML=
 computeHeatIndex(
 temperature,
 humidity
 );
 
-
-
-//clock numbers
-
 const clock=document.getElementById("clock");
+
+function drawNumbers(){
+
+document
+.querySelectorAll(".number")
+.forEach(n=>n.remove());
+
+let size=clock.offsetWidth;
+let center=size/2;
+let radius=size*0.40;
 
 for(let i=1;i<=12;i++){
 
@@ -380,10 +386,8 @@ num.className="number";
 
 let angle=(i*30-90)*(Math.PI/180);
 
-let radius=160;
-
-let x=200+radius*Math.cos(angle);
-let y=200+radius*Math.sin(angle);
+let x=center+radius*Math.cos(angle);
+let y=center+radius*Math.sin(angle);
 
 num.style.left=x+"px";
 num.style.top=y+"px";
@@ -393,6 +397,15 @@ num.innerHTML=i;
 clock.appendChild(num);
 
 }
+
+}
+
+drawNumbers();
+
+window.addEventListener(
+"resize",
+drawNumbers
+);
 
 </script>
 
