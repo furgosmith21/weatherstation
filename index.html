@@ -264,7 +264,10 @@ drawNumbers();
 window.addEventListener("resize",drawNumbers);
 
 /* ===== HEAT INDEX ===== */
-function computeHeatIndex(T,R){
+computeHeatIndex(
+parseFloat(d.temperature || 0),
+parseFloat(d.humidity || 0)
+);
 
 let HI=
 -8.784695+
@@ -306,8 +309,8 @@ firebase.database()
 let d=snapshot.val();
 
 document.getElementById("temp").innerHTML=d.temperature;
-document.getElementById("humidity").innerHTML=d.humidity;
-document.getElementById("pressure").innerHTML=d.pressure;
+document.getElementById("humidity").innerHTML=Math.round(d.humidity);
+document.getElementById("pressure").innerHTML=Math.round(d.pressure);
 document.getElementById("wind").innerHTML=d.wind;
 document.getElementById("gust").innerHTML=d.gust;
 document.getElementById("rain").innerHTML=d.rain;
