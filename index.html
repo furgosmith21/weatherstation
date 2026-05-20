@@ -464,7 +464,7 @@ if(T<27){
 feels=T+(0.05*R);
 }
 
-return feels.toFixed(1);
+return feels.toFixed(4);
 
 }
 
@@ -535,7 +535,7 @@ icon="🌤️";
 document.getElementById("weatherIcon").innerHTML=icon;
 document.getElementById("weatherCondition").innerHTML=condition;
 
-document.getElementById("temp").innerHTML = Number(d.temp) || 0;
+document.getElementById("temp").innerHTML = parseInt(d.temp) || 0;
 document.getElementById("humidity").innerHTML = Math.round(Number(d.humidity) || 0);
 document.getElementById("pressure").innerHTML=Math.round(Number(d.pressure) || 0);
 document.getElementById("wind").innerHTML=d.wind;
