@@ -9,6 +9,11 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <style>
 
 /* ===== BASIC UI ===== */
@@ -128,10 +133,17 @@ font-size:30px;
 font-weight:bold;
 }
 
-
+/* MAP */
+#map{
+height:300px;
+width:100%;
+border-radius:20px;
+margin-top:20px;
+}
 
 
 @media(max-width:900px){
+
 
 .main{
 display:flex;
@@ -352,7 +364,6 @@ STATION ONLINE
 🧭 WIND DIR<br><span id="windDirection"></span>
 (<span id="windDegrees"></span>°)<br><br>
 
-
 💧 HUMIDITY<br><span id="humidity"></span>%<br><br>
 📉 PRESSURE<br><span id="pressure"></span> hPa
 </div>
@@ -362,8 +373,8 @@ STATION ONLINE
 🌬️ WIND<br><span id="wind"></span> km/h<br><br>
 💨 GUST<br><span id="gust"></span> km/h
 </div>
-
 </div>
+<div id="map"></div>
 
 <div class="footer">SHAO WEATHER STATION</div>
 
@@ -580,6 +591,24 @@ status.style.background=
 }
 
 },1000);
+
+let lat=13.4378;
+let lon=121.8198;
+
+let map=L.map('map').setView([lat,lon],13);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'Map'
+}
+).addTo(map);
+
+L.marker([lat,lon])
+.addTo(map)
+.bindPopup("SHAO Weather Station")
+.openPopup();
+
 </script>
 
 </body>
