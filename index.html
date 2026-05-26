@@ -133,6 +133,7 @@ font-size:30px;
 font-weight:bold;
 }
 
+
 /* MAP */
 #map{
 height:300px;
@@ -304,12 +305,18 @@ font-size:55px;
 animation:float 2s infinite ease-in-out;
 }
 
+
 @keyframes float{
 0%{transform:translateY(0px);}
 50%{transform:translateY(-8px);}
 100%{transform:translateY(0px);}
 }
 
+.icon{
+display:inline-block;
+width:35px;
+text-align:center;
+}
 
 </style>
 </head>
@@ -361,17 +368,34 @@ STATION ONLINE
 <div class="bottom">
 
 <div class="box">
-🧭 WIND DIR<br><span id="windDirection"></span>
-(<span id="windDegrees"></span>°)<br><br>
-💧 HUMIDITY<br><span id="humidity"></span>%<br><br>
-📉 PRESSURE<br><span id="pressure"></span> hPa<br><br>
-⛰️ ALTITUDE<br><span id="altitude"></span> m
+<span class="icon">🧭</span>WIND DIR<br>
+<span id="windDirection"></span>
+<span id="windDegrees"></span>°)<br><br>
+
+<span class="icon">🌫️</span>AIR QUALTY<br>
+<span id="airQuality"></span><br><br>
+
+<span class="icon">📉</span>PRESSURE<br>
+<span id="pressure"></span> hPa<br><br>
+
+<span class="icon">⛰️</span>ALTITUDE<br>
+<span id="altitude"></span> m ASL
 </div>
 
 <div class="box">
-🌧️ RAIN<br><span id="rain"></span> mm<br><br>
-🌬️ WIND<br><span id="wind"></span> km/h<br><br>
-💨 GUST<br><span id="gust"></span> km/h
+<span class="icon">🌧️</span>RAIN<br>
+<span id="rain"></span> mm<br><br>
+
+<span class="icon">🌬️</span>WIND<br>
+<span id="wind"></span> km/h<br><br>
+
+<span class="icon">💨</span>GUST<br>
+<span id="gust"></span> km/h<br><br>
+<span class="icon">💧</span>HUMIDITY<br>
+<span id="humidity"></span>%
+
+
+
 </div>
 </div>
 <div id="map"></div>
@@ -553,6 +577,7 @@ document.getElementById("altitude").innerHTML = Math.round(Number(d.altitude || 
 
 document.getElementById("wind").innerHTML=d.wind;
 document.getElementById("gust").innerHTML=d.gust;
+document.getElementById("airQuality").innerHTML =d.airQuality || "FAIR";
 document.getElementById("rain").innerHTML=d.rain;
 document.getElementById("windDirection").innerHTML=d.winddir|| "N";
 document.getElementById("windDegrees").innerHTML = Math.round(Number(d.windDegrees || 0));
