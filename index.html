@@ -363,9 +363,9 @@ STATION ONLINE
 <div class="box">
 🧭 WIND DIR<br><span id="windDirection"></span>
 (<span id="windDegrees"></span>°)<br><br>
+
 💧 HUMIDITY<br><span id="humidity"></span>%<br><br>
-📉 PRESSURE<br><span id="pressure"></span> hPa<br><br>
-⛰️ ALTITUDE<br><span id="altitude"></span> m
+📉 PRESSURE<br><span id="pressure"></span> hPa
 
 </div>
 
@@ -373,9 +373,8 @@ STATION ONLINE
 🌧️ RAIN<br><span id="rain"></span> mm<br><br>
 🌬️ WIND<br><span id="wind"></span> km/h<br><br>
 💨 GUST<br><span id="gust"></span> km/h
-
-</div></div>
-
+</div>
+</div>
 <div id="map"></div>
 
 <div class="footer">SHAO WEATHER STATION</div>
@@ -550,8 +549,7 @@ document.getElementById("weatherCondition").innerHTML=condition;
 
 document.getElementById("temp").innerHTML = parseInt(d.temp) || 0;
 document.getElementById("humidity").innerHTML = Math.round(Number(d.humidity) || 0);
-document.getElementById("pressure").innerHTML= Math.round(Number(d.pressure) || 0);
-document.getElementById("altitude").innerHTML = Math.round(Number(d.altitude || 0));
+document.getElementById("pressure").innerHTML=Math.round(Number(d.pressure) || 0);
 document.getElementById("wind").innerHTML=d.wind;
 document.getElementById("gust").innerHTML=d.gust;
 document.getElementById("rain").innerHTML=d.rain;
