@@ -11,8 +11,12 @@
 
 
 <link rel="stylesheet"
-href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+href="https://unpkg.com/leaflet/dist/leaflet.css"/><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
+<!-- GALAW NG HANGIN -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet-velocity@2.1.4/dist/leaflet-velocity.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-velocity@2.1.4/dist/leaflet-velocity.min.css">
 
 <style>
 
@@ -145,154 +149,25 @@ box-shadow:0 4px 15px rgba(0,0,0,.3);
 border:4px solid #13B8BF;
 }
 
-
 @media(max-width:900px){
-
-
-.main{
-display:flex;
-flex-wrap:nowrap; /* IMPORTANT: bawal bumaba */
-flex-direction:row;
-justify-content:space-between;
-align-items:flex-start;
-padding:15px;
-gap:8px;
+  .main{flex-wrap:nowrap; flex-direction:row; padding:15px; gap:8px; align-items:flex-start;}
+  .left{width:55%; min-width:0;}
+  .clockContainer{width:160px; height:160px; flex-shrink:0;}
+  .number{font-size:16px;}
+  .hour{height:38px;}
+  .minute{height:55px;}
+  .second{height:65px;}
+  .digital{font-size:11px; bottom:35px;}
+  .date{font-size:24px;}
+  .temp{font-size:45px;}
+  .feels{font-size:18px; margin-top:15px;}
+  .feelsValue{font-size:30px;}
+  .signal{font-size:14px; padding:8px 12px;}
+  .bottom{padding:15px; gap:15px;}
+  .box{font-size:16px; line-height:1.6;}
+  .footer{font-size:22px;}
+  #map{height:350px;}
 }
-
-.left{
-width:60%;
-min-width:0;
-}
-
-.clockContainer{
-width:140px;
-height:140px;
-flex-shrink:0; /* IMPORTANT */
-}
-
-.number{
-font-size:14px;
-}
-
-.hour{
-height:35px;
-}
-
-.minute{
-height:50px;
-}
-
-.second{
-height:60px;
-}
-
-.digital{
-font-size:10px;
-bottom:30px;
-}
-
-.date{
-font-size:22px;
-}
-
-.temp{
-font-size:42px;
-}
-
-.feels{
-font-size:16px;
-margin-top:15px;
-}
-
-.feelsValue{
-font-size:26px;
-}
-
-.signal{
-font-size:13px;
-padding:6px 10px;
-}
-
-.bottom{
-grid-template-columns:1fr 1fr;
-padding:15px;
-gap:15px;
-}
-
-.box{
-font-size:15px;
-line-height:1.6;
-}
-
-.footer{
-font-size:22px;
-}
-
-}
-
-.left{
-width:55%;
-}
-
-.clockContainer{
-width:180px;
-height:180px;
-flex-shrink:0;
-}
-
-.number{
-font-size:18px;
-}
-
-.hour{
-height:40px;
-}
-
-.minute{
-height:62px;
-}
-
-.second{
-height:60px;
-}
-
-.digital{
-font-size:12px;
-bottom:40px;
-}
-
-.date{
-font-size:24px;
-}
-
-.temp{
-font-size:45px;
-}
-
-.feels{
-font-size:18px;
-}
-
-.feelsValue{
-font-size:30px;
-}
-
-.signal{
-font-size:14px;
-padding:8px 12px;
-}
-
-.bottom{
-grid-template-columns:1fr 1fr;
-font-size:16px;
-padding:15px;
-}
-
-.box{
-font-size:16px;
-}
-}
-
 .weatherStatus{
 display:flex;
 align-items:center;
@@ -375,7 +250,7 @@ STATION ONLINE
 <span id="windDirection"></span>
 (<span id="windDegrees"></span>°)<br><br>
 
-<span class="icon">🌫️</span>AIR QUALTY<br>
+<span class="icon">🌫️</span>AIR QUALITY<br>
 <span id="airQuality"></span><br><br>
 
 <span class="icon">📉</span>PRESSURE<br>
@@ -490,40 +365,33 @@ drawNumbers();
 window.addEventListener("resize",drawNumbers);
 
 /* ===== HEAT INDEX ===== */
-function computeHeatIndex(T,R){
-
-T=parseFloat(T);
-R=parseFloat(R);
-
-// mas realistic for dashboard use
-let feels = T + (0.05 * R);
-
-if(T<27){
-feels=T+(0.05*R);
+function computeHeatIndex(C, R){
+  if(C < 27) return C.toFixed(1);
+  let T = C * 9/5 + 32; // to Fahrenheit
+  let HI = -42.379 + 2.04901523*T + 10.14333127*R - 0.22475541*T*R - 0.00683783*T*T - 0.05481717*R*R + 0.00122874*T*T*R + 0.00085282*T*R*R - 0.00000199*T*T*R*R;
+  return ((HI - 32) * 5/9).toFixed(1); // back to Celsius
 }
 
-return feels.toFixed(1);
 
-}
-
-/* ===== TYHOON SIGNAL ===== */
+/* ===== TYPHOON SIGNAL ===== */
 function updateStormSignal(level){
 
 const el=document.getElementById("stormSignal");
 
 switch(level){
 
+case 0: el.innerHTML="🌀 Signal No. 0"; el.style.background="#42DC18"; break;
 case 1: el.innerHTML="🌀 Signal No. 1"; el.style.background="#08F7DF"; break;
 case 2: el.innerHTML="🌀 Signal No. 2"; el.style.background="#EEFA05"; break;
 case 3: el.innerHTML="🌀 Signal No. 3"; el.style.background="#FA8C05"; break;
 case 4: el.innerHTML="🌀 Signal No. 4"; el.style.background="#F50014"; break;
 case 5: el.innerHTML="🌀 Signal No. 5"; el.style.background="#F005EC"; break;
 default: el.innerHTML="🌀 Signal No. 0"; el.style.background="#42DC18";
-
-
 }
 
 }
+
+window.lastReceive = Date.now(); 
 
 /* ===== LIVE FIREBASE DATA ===== */
 firebase.database()
@@ -577,13 +445,11 @@ document.getElementById("temp").innerHTML = parseInt(d.temp) || 0;
 document.getElementById("humidity").innerHTML = Math.round(Number(d.humidity) || 0);
 document.getElementById("pressure").innerHTML= Math.round(Number(d.pressure) || 0);
 document.getElementById("altitude").innerHTML = Math.round(Number(d.altitude || 0));
-
-document.getElementById("wind").innerHTML=d.wind;
-document.getElementById("gust").innerHTML=d.gust;
-document.getElementById("airQuality").innerHTML =d.airQuality || "FAIR";
-document.getElementById("rain").innerHTML=d.rain;
-document.getElementById("windDirection").innerHTML=d.winddir|| "N";
-document.getElementById("windDegrees").innerHTML = Math.round(Number(d.windDegrees || 0));
+document.getElementById("wind").innerHTML = d.wind ?? '--';
+document.getElementById("gust").innerHTML = d.gust ?? '--';
+document.getElementById("rain").innerHTML = d.rain ?? '0';
+document.getElementById("windDirection").innerHTML = d.winddir || "N";
+document.getElementById("windDegrees").innerHTML = Math.round(Number(d.windDegrees)) || 0;
 
 document.getElementById("feelsLike").innerHTML=
 computeHeatIndex(
@@ -592,14 +458,12 @@ parseFloat(d.humidity || 0)
 );
 updateStormSignal(d.stormSignal);
 window.lastReceive=Date.now()
-
 });
 
 
 setInterval(()=>{
 
-let status=
-document.getElementById("deviceStatus");
+let status=document.getElementById("deviceStatus");
 
 if(Date.now()-window.lastReceive>7000){
 
@@ -625,11 +489,7 @@ status.style.background=
 let lat=13.4395;
 let lon=121.8230;
 
-let map=L.map('map',{
-zoomControl:true,
-minZoom:1,
-maxZoom:25
-}).setView([lat,lon],6);
+let map=L.map('map',{zoomControl:true,minZoom:2,maxZoom:18}).setView([lat,lon],6);
 
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -643,13 +503,76 @@ L.marker([lat,lon])
 .bindPopup("Shao Weather Station")
 .openPopup();
 
-// LIVE RAIN RADAR
-L.tileLayer(
-'https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=3ff542adbc37dfce7cd1ac05966ae239',
-{
-opacity:0.5
+// ↓↓↓ GALAW NG HANGIN - TULDOK-TULDOK ↓↓↓
+let velocityLayer;
+
+function loadWind() {
+  let data = [
+    {
+      "header": {
+        "parameterCategory": 2, "parameterNumber": 2,
+        "nx": 144, "ny": 73, "lo1": 0, "la1": 90, "lo2": 357.5, "la2": -90, "dx": 2.5, "dy": 2.5
+      },
+      "data": []
+    },
+    {
+      "header": {
+        "parameterCategory": 2, "parameterNumber": 3,
+        "nx": 144, "ny": 73, "lo1": 0, "la1": 90, "lo2": 357.5, "la2": -90, "dx": 2.5, "dy": 2.5
+      },
+      "data": []
+    }
+  ];
+
+  // Fake paikot na hangin para sa demo
+  for(let i = 0; i < 144*73; i++){
+    let x = i % 144;
+    let y = Math.floor(i / 144);
+    let cx = 124/2.5;
+    let cy = (90-13.5)/2.5;
+    let angle = Math.atan2(y - cy, x - cx) + Math.PI/2;
+    let dist = Math.sqrt((x-cx)**2 + (y-cy)**2);
+    let speed = Math.max(0, 20 - dist*0.6);
+    data[0].data[i] = Math.cos(angle) * speed;
+    data[1].data[i] = Math.sin(angle) * speed;
+  }
+
+  if(velocityLayer) map.removeLayer(velocityLayer);
+
+  velocityLayer = L.velocityLayer({
+    displayValues: false,
+    displayOptions: {
+      velocityType: 'Wind',
+      position: 'bottomleft',
+      speedUnit: 'km/h'
+    },
+    data: data,
+    maxVelocity: 30,
+    velocityScale: 0.005,
+    particleAge: 60, // para maging tuldok-tuldok
+    lineWidth: 1, // laki ng tuldok
+    particleMultiplier: 1/180, // dami ng tuldok
+    frameRate: 12, // para stuttered
+    pathLength: 20, 
+    colorScale: ["#FFFFFF"]
+  });
+
+  velocityLayer.addTo(map);
 }
-).addTo(map);
+loadWind();
+
+// Ulan layer - static pa rin pero okay na yan
+let rainLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=3ff542adbc37dfce7cd1ac05966ae239`, {
+  opacity: 0.9
+}).addTo(map);
+
+L.control.layers(null, {
+  "WIND": velocityLayer,
+  "RAIN": rainLayer
+}).addTo(map);
+
+// Refresh every 30 mins
+setInterval(loadWind, 1800000);
 </script>
 
 </body>
