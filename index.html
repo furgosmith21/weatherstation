@@ -625,7 +625,11 @@ status.style.background=
 let lat=13.4395;
 let lon=121.8230;
 
-let map=L.map('map').setView([lat,lon],13);
+let map=L.map('map',{
+zoomControl:true,
+minZoom:3,
+maxZoom:10
+}).setView([lat,lon],6);
 
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -639,6 +643,13 @@ L.marker([lat,lon])
 .bindPopup("Shao Weather Station")
 .openPopup();
 
+// LIVE RAIN RADAR
+L.tileLayer(
+'https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=3ff542adbc37dfce7cd1ac05966ae239',
+{
+opacity:0.5
+}
+).addTo(map);
 </script>
 
 </body>
