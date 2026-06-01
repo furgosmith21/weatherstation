@@ -247,8 +247,7 @@ STATION ONLINE
 
 <div class="box">
 <span class="icon">🧭</span>WIND DIR<br>
-<span id="windDirection"></span>
-(<span id="windDegrees"></span>°)<br><br>
+<span id="windDirection"></span>  (<span id="windDegrees"></span>°)<br><br>
 
 <span class="icon">🌫️</span>AIR QUALITY<br>
 <span id="airQuality"></span><br><br>
@@ -404,6 +403,10 @@ console.log(d);
 let temp = Number(d.temp || 0);
 let humidity = Number(d.humidity || 0);
 
+let windDeg = Number(d.winddir || 0);      // Ginamit na si d
+let windCard = d.cardinal || "N";          // Ginamit na si d
+let displayText = windCard + " (" + Math.round(windDeg) + "°)";
+
 let condition=(d.condition || "SUNNY").toUpperCase();
 
 let icon="☀️";
@@ -448,8 +451,9 @@ document.getElementById("altitude").innerHTML = Math.round(Number(d.altitude || 
 document.getElementById("wind").innerHTML = d.wind ?? '--';
 document.getElementById("gust").innerHTML = d.gust ?? '--';
 document.getElementById("rain").innerHTML = d.rain ?? '0';
-document.getElementById("windDirection").innerHTML = d.winddir || "N";
-document.getElementById("windDegrees").innerHTML = Math.round(Number(d.windDegrees)) || 0;
+document.getElementById("windDirection").innerText = windCard;
+document.getElementById("windDegrees").innerText = Math.round(windDeg);
+
 
 document.getElementById("feelsLike").innerHTML=
 computeHeatIndex(
