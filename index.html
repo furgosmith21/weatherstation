@@ -558,7 +558,7 @@ function loadWind() {
 }
 loadWind();
 
-// Ulan layer - static pa rin pero okay na yan
+// Ulan layer 
 let rainLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=3ff542adbc37dfce7cd1ac05966ae239`, {
   opacity: 0.9
 }).addTo(map);
@@ -568,8 +568,8 @@ L.control.layers(null, {
   "RAIN": rainLayer
 }).addTo(map);
 
-// Refresh every 10 sec
-setInterval(loadWind, 0);
+// Refresh every 40 minutes
+setInterval(loadWind, 2400000 );
 </script>
 
 </body>
