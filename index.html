@@ -462,7 +462,7 @@ setInterval(()=>{
 
 let status=document.getElementById("deviceStatus");
 
-if(Date.now()-window.lastReceive>7000){
+if(Date.now()-window.lastReceive>20000){
 
 status.innerHTML=
 "STATION OFFLINE";
@@ -568,8 +568,8 @@ L.control.layers(null, {
   "RAIN": rainLayer
 }).addTo(map);
 
-// Refresh every 30 mins
-setInterval(loadWind, 1800000);
+// Refresh every 10 sec
+setInterval(loadWind, 10000);
 </script>
 
 </body>
